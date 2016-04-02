@@ -1,0 +1,193 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="${relativePackage}.${activityClass}" >
+
+    <View
+        android:id="@+id/bg_list_food_name"
+        android:layout_width="200dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:background="@drawable/cookbook_background" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_toRightOf="@id/bg_list_food_name"
+        android:background="@drawable/cookbook_background" />
+
+    <ListView
+        android:id="@+id/list_food_name"
+        android:layout_width="195dp"
+        android:layout_height="270dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="40dp"
+        android:divider="#00000000"
+        android:dividerHeight="4dp"
+        android:fadeScrollbars="false"
+        android:scrollbarFadeDuration="0"
+        android:scrollbarStyle="outsideOverlay"
+        android:scrollbarThumbVertical="@drawable/scrollbar"
+        android:scrollbars="vertical" >
+    </ListView>
+
+    <RelativeLayout
+        android:layout_width="380dp"
+        android:layout_height="280dp"
+        android:layout_alignTop="@+id/list_food_name"
+        android:layout_toRightOf="@+id/list_food_name" >
+
+        <TextView
+            android:id="@+id/tv_food_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="0dp"
+            android:text="◆龙老汤面◆"
+            android:textColor="@color/tv_default_color"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <View
+            android:id="@+id/view1"
+            android:layout_width="320dp"
+            android:layout_height="1dp"
+            android:layout_alignLeft="@id/tv_food_name"
+            android:layout_below="@id/tv_food_name"
+            android:layout_marginTop="5dp"
+            android:background="#c0c0c0" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/view1"
+            android:layout_marginRight="0dp"
+            android:layout_toLeftOf="@+id/img_rank"
+            android:text="难度："
+            android:textColor="@color/tv_default_color"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/img_rank"
+            android:layout_width="40dp"
+            android:layout_height="48dp"
+            android:layout_above="@id/view1"
+            android:layout_alignRight="@id/view1"
+            android:src="@drawable/logo_rank_1" />
+
+        <RelativeLayout
+            android:id="@+id/layout_page_2"
+            android:layout_width="320dp"
+            android:layout_height="275dp"
+            android:layout_alignLeft="@+id/view1"
+            android:layout_below="@+id/view1"
+            android:layout_marginTop="10dp"
+            android:visibility="invisible" >
+            
+            <ListView 
+                android:id="@+id/list_step"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+            </ListView>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/layout_page_1"
+            android:layout_width="320dp"
+            android:layout_height="275dp"
+            android:layout_alignLeft="@+id/view1"
+            android:layout_below="@+id/view1"
+            android:layout_marginTop="10dp"
+            android:visibility="visible" >
+
+            <ImageView
+                android:id="@+id/img_food"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/food1" />
+
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="15dp"
+                android:layout_toRightOf="@id/img_food"
+                android:text="【效果】"
+                android:textColor="@color/tv_default_color"
+                android:textStyle="bold" />
+            
+            <TextView
+                android:id="@+id/tv_food_effect"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/textView1"
+                android:layout_marginLeft="25dp"
+                android:layout_toRightOf="@id/img_food"
+                android:layout_marginTop="10dp"
+                android:text="HP 恢复30%"
+                android:textColor="#333333" />
+
+            <View
+                android:id="@+id/bg_list_material"
+                android:layout_width="320dp"
+                android:layout_height="150dp"
+                android:layout_below="@id/img_food"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/girdview_frame" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@id/bg_list_material"
+                android:layout_alignTop="@id/bg_list_material"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="6dp"
+                android:text="【食材】"
+                android:textColor="@color/tv_default_color"
+                android:textStyle="bold" />
+
+            <GridView
+                android:id="@+id/list_material"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/textView2"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:horizontalSpacing="20dp"
+                android:verticalSpacing="5dp"
+                android:numColumns="2" >
+            </GridView>
+            
+            <View
+                android:layout_width="1dp"
+                android:layout_height="100dp"
+                android:layout_centerHorizontal="true"
+                android:layout_alignBottom="@id/list_material"
+                android:layout_marginBottom="5dp"
+                android:background="#c0c0c0" />
+            
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/btn_arrow"
+        android:layout_width="40dp"
+        android:layout_height="80dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="15dp"
+        android:background="@drawable/btn_arrow" />
+
+</RelativeLayout>

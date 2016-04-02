@@ -1,0 +1,9 @@
+<resources>
+
+    <color name="white">#ffffff</color>
+    <color name="black">#000000</color>
+    <color name="gold">#CFB53B</color>
+    <color name="tv_default_color">#8B5A2B</color>
+    <color name="item_hint_color">#8056c5ff</color>
+
+</resources>

@@ -1,0 +1,38 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="${relativePackage}.${activityClass}" >
+
+    <ImageView
+        android:id="@+id/img_material_icon"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/icon_129"
+        android:background="@drawable/icon_frame" />
+
+    <TextView
+        android:id="@+id/tv_material_name"
+        android:layout_width="60dp"
+        android:layout_height="30dp"
+        android:layout_toRightOf="@+id/img_material_icon"
+        android:gravity="center_vertical"
+        android:paddingLeft="4dp"
+        android:text="牛肉"
+        android:textColor="@color/tv_default_color"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+    
+    <TextView
+        android:id="@+id/tv_material_weight"
+        android:layout_width="60dp"
+        android:layout_height="30dp"
+        android:layout_toRightOf="@+id/tv_material_name"
+        android:gravity="center_vertical"
+        android:text="500g"
+        android:textColor="#333333"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+</RelativeLayout>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>  
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >  
+  
+    <!-- 第一层 -->  
+    <item>  
+        <shape>  
+            <size
+		        android:width="320dp"
+		        android:height="150dp"/>
+            <corners 
+                android:radius="4dp" /> 
+            <stroke
+		        android:width="2dp"
+		        android:color="#c0c0c0" /> 
+        </shape>  
+    </item>  
+    <!-- 第二层 -->  
+    <item
+        android:left="5dp" 
+        android:right="5dp" 
+        android:top="5dp"
+        android:bottom="5dp" >  
+        <shape>  
+            <size
+		        android:width="320dp"
+		        android:height="150dp"/>
+			<corners 
+			    android:radius="4dp" />  
+			<stroke
+		        android:width="2dp"
+		        android:color="#c0c0c0" /> 
+        </shape>  
+    </item>  
+  
+</layer-list>
