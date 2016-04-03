@@ -28,12 +28,19 @@ public class MainActivity extends Activity {
 	private ListView list_food_name;
 	private GridView list_material;
 	private ListView list_step;
+	private ListView list_material_edit;
+	private ListView list_step_edit;
+	
 	private TextView tv_food_name;
 	private ImageView img_food;
 	private ImageView img_rank;
 	private Button btn_arrow;
+	private Button btn_query;
+	private Button btn_edit;
 	private ViewGroup layout_page_1;
 	private ViewGroup layout_page_2;
+	private ViewGroup layout_show;
+	private ViewGroup layout_edit;
 	
 	private List<FoodListBean> bean_food;
 	private FoodListAdapter adapter_food;
@@ -45,6 +52,7 @@ public class MainActivity extends Activity {
 	private StepListAdapter adapter_step;
 	
 	private int page = 1;
+	private boolean isEdit = false;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -54,13 +62,19 @@ public class MainActivity extends Activity {
 		list_food_name = (ListView) findViewById(R.id.list_food_name);
 		list_material = (GridView) findViewById(R.id.list_material);
 		list_step = (ListView) findViewById(R.id.list_step);
+		list_material_edit = (ListView) findViewById(R.id.list_material_edit);
+		list_step_edit = (ListView) findViewById(R.id.list_step_edit);
 		
 		tv_food_name = (TextView) findViewById(R.id.tv_food_name);
 		img_food = (ImageView) findViewById(R.id.img_food);
 		img_rank = (ImageView) findViewById(R.id.img_rank);
 		btn_arrow = (Button) findViewById(R.id.btn_arrow);
+		btn_query = (Button) findViewById(R.id.btn_query);
+		btn_edit = (Button) findViewById(R.id.btn_edit);
 		layout_page_1 = (ViewGroup) findViewById(R.id.layout_page_1);
 		layout_page_2 = (ViewGroup) findViewById(R.id.layout_page_2);
+		layout_show = (ViewGroup) findViewById(R.id.layout_show);
+		layout_edit = (ViewGroup) findViewById(R.id.layout_edit);
 		
 		list_food_name.setOnItemClickListener(new OnItemClickListener(){
 			@Override
@@ -95,6 +109,25 @@ public class MainActivity extends Activity {
 				}
 			}
 		});
+		
+		btn_edit.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				if(isEdit == false){
+					isEdit = true;
+					btn_edit.setBackgroundResource(R.drawable.tab_pressed);
+					layout_show.setVisibility(View.INVISIBLE);
+					layout_edit.setVisibility(View.VISIBLE);
+					btn_arrow.setVisibility(View.INVISIBLE);
+				}else{
+					isEdit = false;
+					btn_edit.setBackgroundResource(R.drawable.tab_default);
+					layout_show.setVisibility(View.VISIBLE);
+					layout_edit.setVisibility(View.INVISIBLE);
+					btn_arrow.setVisibility(View.VISIBLE);
+				}
+			}
+		});
 	}
 	
 	@Override
@@ -104,6 +137,9 @@ public class MainActivity extends Activity {
 		initFoodList();
 		initMaterialList();
 		initStepList();
+		
+		layout_show.setVisibility(View.VISIBLE);
+		layout_edit.setVisibility(View.INVISIBLE);
 	}
 	
 	private void setFoodAdapter(List<FoodListBean> list){
@@ -166,6 +202,8 @@ public class MainActivity extends Activity {
 	private void setMaterialAdapter(List<MaterialListBean> list){
 		adapter_material = new MaterialListAdapter(getBaseContext(), list);
 		list_material.setAdapter(adapter_material);
+		// TODO test
+		list_material_edit.setAdapter(adapter_material);
 	}
 	
 	private void addMaterialToList(String name, int img_index, int weight, String unit){
@@ -257,6 +295,8 @@ public class MainActivity extends Activity {
 	private void setStepAdapter(List<StepListBean> list){
 		adapter_step = new StepListAdapter(getBaseContext(), list);
 		list_step.setAdapter(adapter_step);
+		// TODO test
+		list_step_edit.setAdapter(adapter_step);
 	}
 	
 	private void initStepList(){
