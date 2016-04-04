@@ -3,6 +3,7 @@ package com.simoncherry.gamecookbook.Bean;
 
 public class FoodListBean{
 	private String food_name;
+	private String food_effect;
 	private int img_index;
 	private int food_rank;
 	private boolean isHighLight = false;
@@ -13,6 +14,14 @@ public class FoodListBean{
 	
 	public String getFoodName(){
 		return this.food_name;
+	}
+	
+	public void setFoodEffect(String effect){
+		this.food_effect = effect;
+	}
+	
+	public String getFoodEffect(){
+		return this.food_effect;
 	}
 	
 	public void setFoodImgIndex(int index){

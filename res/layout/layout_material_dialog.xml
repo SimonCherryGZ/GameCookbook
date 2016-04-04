@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>  
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    
+    <GridView 
+        android:id="@+id/girdview_material"
+        android:layout_width="600dp"
+        android:layout_height="140dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:numColumns="5"
+        android:gravity="center"
+        android:horizontalSpacing="10dp"
+        android:verticalSpacing="10dp" >
+        
+    </GridView>
+    
+    <View 
+        android:id="@+id/view_divder"
+        android:layout_width="400dp"
+        android:layout_height="1dp"
+        android:layout_alignLeft="@id/girdview_material"
+        android:layout_below="@id/girdview_material"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:background="#c0c0c0" />
+
+    <ImageView
+        android:id="@+id/img_material"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignLeft="@+id/view_divder"
+        android:layout_below="@id/view_divder"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/icon1" />
+    
+    <EditText
+        android:id="@+id/et_material_name"
+        android:layout_width="140dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/view_divder"
+        android:layout_toRightOf="@id/img_material"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="10dp"
+        android:textColor="@color/tv_default_color"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:hint="输入新食材名称" />
+    
+    <EditText
+        android:id="@+id/et_material_weight"
+        android:layout_width="90dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/view_divder"
+        android:layout_toRightOf="@id/et_material_name"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="10dp"
+        android:textColor="@color/tv_default_color"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:hint="输入分量" />
+    
+    <EditText
+        android:id="@+id/et_material_unit"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/view_divder"
+        android:layout_toRightOf="@id/et_material_weight"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="10dp"
+        android:textColor="@color/tv_default_color"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:hint="输入单位" />
+    
+    <View 
+        android:id="@+id/view_divder2"
+        android:layout_width="400dp"
+        android:layout_height="1dp"
+        android:layout_alignLeft="@id/girdview_material"
+        android:layout_below="@id/girdview_material"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="70dp"
+        android:background="#c0c0c0" />
+
+    <Button
+        android:id="@+id/btn_ok"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/view_divder2"
+        android:layout_below="@id/view_divder2"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="10dp"
+        android:text="确定" />
+    
+    <Button
+        android:id="@+id/btn_cancel"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/view_divder2"
+        android:layout_below="@id/view_divder2"
+        android:layout_marginRight="40dp"
+        android:layout_marginTop="10dp"
+        android:text="取消" />
+    
+</RelativeLayout> 

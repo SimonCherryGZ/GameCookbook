@@ -3,9 +3,7 @@ package com.simoncherry.gamecookbook.Adapter;
 import java.util.List;
 
 import com.simoncherry.gamecookbook.R;
-import com.simoncherry.gamecookbook.Bean.FoodListBean;
-import com.simoncherry.gamecookbook.Bean.MaterialListBean;
-
+import com.simoncherry.gamecookbook.Bean.IconSelectListBean;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -15,14 +13,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.TextView;
 
-public class MaterialListAdapter extends BaseAdapter{
+public class IconSelectListAdapter extends BaseAdapter{
 	private Context ctx;
 	private LayoutInflater inflater;
-	private List<MaterialListBean> list;
+	private List<IconSelectListBean> list;
 	
-	public MaterialListAdapter(Context context, List<MaterialListBean> list){
+	public IconSelectListAdapter(Context context, List<IconSelectListBean> list){
 		this.ctx = context;
 		this.inflater = LayoutInflater.from(context);
 		this.list = list;
@@ -48,39 +45,26 @@ public class MaterialListAdapter extends BaseAdapter{
 		final ViewHolder holder;
 		
 		if (convertView == null) {
-			convertView = inflater.inflate(R.layout.item_material_list, null);
+			convertView = inflater.inflate(R.layout.item_icon_dialog, null);
 			holder = new ViewHolder();
-			holder.tv_material_name = (TextView) convertView.findViewById(R.id.tv_material_name);
-			holder.tv_material_weight = (TextView) convertView.findViewById(R.id.tv_material_weight);
-			holder.img_material_icon = (ImageView) convertView.findViewById(R.id.img_material_icon);
+			holder.img_icon = (ImageView) convertView.findViewById(R.id.img_icon);
 			
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
 		
-		MaterialListBean listbean = list.get(position);
-		int material_imgID = listbean.getMaterialImgIndex();
-		String material_name = listbean.getMaterialName();
-		int material_weight = listbean.getMaterialWeight();
-		String material_unit = listbean.getMaterialUnit();
-		
-		//holder.img_material_icon.setImageResource(material_imgID);
-		int imgID = ctx.getResources().getIdentifier("icon"+String.valueOf(material_imgID), "drawable", ctx.getPackageName());
-		holder.img_material_icon.setImageBitmap(decodeSampledBitmapFromResource(
-				ctx.getResources(), imgID, 64, 64));
-		
-		holder.tv_material_name.setText(material_name);
-		holder.tv_material_weight.setText(
-				String.valueOf(material_weight) + material_unit);
+		IconSelectListBean listbean = list.get(position);
+		int resId = listbean.getIconResId();
+		//holder.img_icon.setImageResource(resId);
+		holder.img_icon.setImageBitmap(decodeSampledBitmapFromResource(
+				ctx.getResources(), resId, 40, 40));
 		
 		return convertView;
 	}
 	
 	private static class ViewHolder {
-		TextView tv_material_name;
-		TextView tv_material_weight;
-		ImageView img_material_icon;
+		ImageView img_icon;
 	}
 	
 	public int calculateInSampleSize(BitmapFactory.Options options, 

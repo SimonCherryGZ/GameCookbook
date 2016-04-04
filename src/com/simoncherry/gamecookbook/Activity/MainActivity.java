@@ -10,8 +10,14 @@ import com.simoncherry.gamecookbook.Adapter.StepListAdapter;
 import com.simoncherry.gamecookbook.Bean.FoodListBean;
 import com.simoncherry.gamecookbook.Bean.MaterialListBean;
 import com.simoncherry.gamecookbook.Bean.StepListBean;
+import com.simoncherry.gamecookbook.Custom.IconSelectDialog;
+import com.simoncherry.gamecookbook.Custom.IconSelectDialog.OnIconSelectListener;
+import com.simoncherry.gamecookbook.Custom.MaterialEditDialog;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -19,12 +25,13 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity{
 	private ListView list_food_name;
 	private GridView list_material;
 	private ListView list_step;
@@ -32,15 +39,23 @@ public class MainActivity extends Activity {
 	private ListView list_step_edit;
 	
 	private TextView tv_food_name;
+	private TextView tv_food_effect;
 	private ImageView img_food;
 	private ImageView img_rank;
+	private ImageView img_icon_edit;
+	private ImageView img_rank_edit;
 	private Button btn_arrow;
 	private Button btn_query;
 	private Button btn_edit;
+	private Button btn_add_food;
+	private Button btn_add_step;
 	private ViewGroup layout_page_1;
 	private ViewGroup layout_page_2;
 	private ViewGroup layout_show;
 	private ViewGroup layout_edit;
+	
+	private EditText et_food_name;
+	private EditText et_food_effect;
 	
 	private List<FoodListBean> bean_food;
 	private FoodListAdapter adapter_food;
@@ -52,7 +67,10 @@ public class MainActivity extends Activity {
 	private StepListAdapter adapter_step;
 	
 	private int page = 1;
+	private int last_position = 0;
 	private boolean isEdit = false;
+	private int temp_icon_index = 0;
+	private int temp_rank_index = 0;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -66,20 +84,29 @@ public class MainActivity extends Activity {
 		list_step_edit = (ListView) findViewById(R.id.list_step_edit);
 		
 		tv_food_name = (TextView) findViewById(R.id.tv_food_name);
+		tv_food_effect = (TextView) findViewById(R.id.tv_food_effect);
 		img_food = (ImageView) findViewById(R.id.img_food);
 		img_rank = (ImageView) findViewById(R.id.img_rank);
+		img_icon_edit = (ImageView) findViewById(R.id.img_icon_edit);
+		img_rank_edit = (ImageView) findViewById(R.id.img_rank_edit);
 		btn_arrow = (Button) findViewById(R.id.btn_arrow);
 		btn_query = (Button) findViewById(R.id.btn_query);
 		btn_edit = (Button) findViewById(R.id.btn_edit);
+		btn_add_food = (Button) findViewById(R.id.btn_add_material);
+		btn_add_step = (Button) findViewById(R.id.btn_add_step);
 		layout_page_1 = (ViewGroup) findViewById(R.id.layout_page_1);
 		layout_page_2 = (ViewGroup) findViewById(R.id.layout_page_2);
 		layout_show = (ViewGroup) findViewById(R.id.layout_show);
 		layout_edit = (ViewGroup) findViewById(R.id.layout_edit);
 		
+		et_food_name = (EditText) findViewById(R.id.et_food_name);
+		et_food_effect = (EditText) findViewById(R.id.et_food_effect);
+		
 		list_food_name.setOnItemClickListener(new OnItemClickListener(){
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				tv_food_name.setText("◆"+bean_food.get(position).getFoodName()+"◆");
+				tv_food_effect.setText(bean_food.get(position).getFoodEffect());
 				setHighLightItem(position);
 				setFoodImg(bean_food.get(position).getFoodImgIndex());
 				setFoodRank(bean_food.get(position).getFoodRank());
@@ -89,6 +116,8 @@ public class MainActivity extends Activity {
 				page = 1;
 				layout_page_1.setVisibility(View.VISIBLE);
 				layout_page_2.setVisibility(View.INVISIBLE);
+				
+				last_position = position;
 			}
 		});
 		
@@ -119,13 +148,106 @@ public class MainActivity extends Activity {
 					layout_show.setVisibility(View.INVISIBLE);
 					layout_edit.setVisibility(View.VISIBLE);
 					btn_arrow.setVisibility(View.INVISIBLE);
+					
+					bean_step = new ArrayList<StepListBean>();
+					adapter_step = new StepListAdapter(getBaseContext(), bean_step);
+					list_step_edit.setAdapter(adapter_step);
+					
+					bean_material = new ArrayList<MaterialListBean>();
+					adapter_material = new MaterialListAdapter(getBaseContext(), bean_material);
+					list_material_edit.setAdapter(adapter_material);
 				}else{
-					isEdit = false;
-					btn_edit.setBackgroundResource(R.drawable.tab_default);
-					layout_show.setVisibility(View.VISIBLE);
-					layout_edit.setVisibility(View.INVISIBLE);
-					btn_arrow.setVisibility(View.VISIBLE);
+//					isEdit = false;
+//					btn_edit.setBackgroundResource(R.drawable.tab_default);
+//					layout_show.setVisibility(View.VISIBLE);
+//					layout_edit.setVisibility(View.INVISIBLE);
+//					btn_arrow.setVisibility(View.VISIBLE);
+//					
+//					showMaterial(last_position);
+//					showStep(last_position);
+					
+					showFoodConfirmDialog(MainActivity.this);
 				}
+			}
+		});
+		
+		btn_add_food.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				final MaterialEditDialog.Builder builder = new MaterialEditDialog.Builder(MainActivity.this);
+				builder.setPositiveButton(new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						// TODO
+						int icon_index = builder.getIconIndex();
+						String material_name = builder.getMaterialName();
+						int material_weight = builder.getMaterialWeight();
+						String material_unit = builder.getMaterialUnit();
+						
+						addMaterialToList(material_name, icon_index, material_weight, material_unit);
+						list_material_edit.smoothScrollToPosition(bean_material.size()-1);
+						
+						dialog.dismiss();
+					}
+				});
+				
+				builder.setNegativeButton(new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.dismiss();
+					}
+				});
+				
+				builder.create().show();
+			}
+		});
+		
+		btn_add_step.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				showAddStepDialog(MainActivity.this);
+			}
+		});
+		
+		img_icon_edit.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				IconSelectDialog.Builder builder = new IconSelectDialog.Builder(
+						MainActivity.this, 0);
+
+				builder.setClicklistener(new OnIconSelectListener(){
+					@Override
+					public void setIcon(int type, int index) {
+						if(type == 0){
+							temp_icon_index = index;
+							String img_name = "food" + String.valueOf(index);
+							int img_id = getResources().getIdentifier(img_name, "drawable", getPackageName());
+							img_icon_edit.setImageResource(img_id);
+						}
+					}
+				});
+				builder.create().show();
+			}
+		});
+		
+		img_rank_edit.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				IconSelectDialog.Builder builder = new IconSelectDialog.Builder(
+						MainActivity.this, 1);
+
+				builder.setClicklistener(new OnIconSelectListener(){
+					@Override
+					public void setIcon(int type, int index) {
+						if(type == 1){
+							temp_rank_index = index;
+							String img_name = "logo_rank_" + String.valueOf(index);
+							int img_id = getResources().getIdentifier(img_name, "drawable", getPackageName());
+							img_rank_edit.setImageResource(img_id);
+						}
+					}
+				});
+				builder.create().show();
 			}
 		});
 	}
@@ -147,9 +269,10 @@ public class MainActivity extends Activity {
 		list_food_name.setAdapter(adapter_food);
 	}
 	
-	private void addFoodToList(String name, int img_index, int rank){
+	private void addFoodToList(String name, String effect, int img_index, int rank){
 		FoodListBean listbean = new FoodListBean();
 		listbean.setFoodName(name);
+		listbean.setFoodEffect(effect);
 		listbean.setFoodImgIndex(img_index);
 		listbean.setFoodRank(rank);
 		bean_food.add(listbean);
@@ -160,16 +283,16 @@ public class MainActivity extends Activity {
 		bean_food = new ArrayList<FoodListBean>();
 		setFoodAdapter(bean_food);
 
-		addFoodToList("龙老汤面", 1, 2);
-		addFoodToList("药膳麻婆豆腐", 2, 3);
-		addFoodToList("猛虎炒饭", 3, 2);
-		addFoodToList("多汁牛排", 5, 7);
-		addFoodToList("特制炖牛肉", 4, 6);
-		addFoodToList("杂锦肉锅", 2, 5);
-		addFoodToList("浓汤炖鱼锅", 8, 5);
-		addFoodToList("香酥炸鱼排", 6, 3);
-		addFoodToList("田园蛋包饭", 7, 4);
-		addFoodToList("会心奶酪培根面", 1, 1);
+		addFoodToList("龙老汤面", "HP恢复40%", 1, 2);
+		addFoodToList("药膳麻婆豆腐", "异常状态抵抗提示30%", 2, 3);
+		addFoodToList("猛虎炒饭", "ATK提升50%", 3, 2);
+		addFoodToList("多汁牛排", "HP恢复100%", 5, 7);
+		addFoodToList("特制炖牛肉", "HP恢复80%", 4, 6);
+		addFoodToList("杂锦肉锅", "HP恢复30%、SP恢复30%", 2, 5);
+		addFoodToList("浓汤炖鱼锅", "异常状态恢复", 8, 5);
+		addFoodToList("香酥炸鱼排", "会心一击率提升25%", 6, 3);
+		addFoodToList("田园蛋包饭", "DEF提升20%", 7, 4);
+		addFoodToList("会心奶酪培根面", "HP恢复30%", 1, 1);
 		
 		setHighLightItem(0);
 		setFoodImg(bean_food.get(0).getFoodImgIndex());
@@ -202,8 +325,6 @@ public class MainActivity extends Activity {
 	private void setMaterialAdapter(List<MaterialListBean> list){
 		adapter_material = new MaterialListAdapter(getBaseContext(), list);
 		list_material.setAdapter(adapter_material);
-		// TODO test
-		list_material_edit.setAdapter(adapter_material);
 	}
 	
 	private void addMaterialToList(String name, int img_index, int weight, String unit){
@@ -228,66 +349,66 @@ public class MainActivity extends Activity {
 		}
 		switch(index){
 			case 0 :
-				addMaterialToList("面条", 248, 300, "g");
-				addMaterialToList("鲜虾", 241, 200, "g");
-				addMaterialToList("鱼肉", 127, 200, "g");
-				addMaterialToList("洋葱", 39, 10, "g");
-				addMaterialToList("胡萝卜", 26, 10, "g");
+				addMaterialToList("面条", 33, 300, "g");
+				addMaterialToList("鲜虾", 32, 200, "g");
+				addMaterialToList("鱼肉", 26, 200, "g");
+				addMaterialToList("洋葱", 9, 10, "g");
+				addMaterialToList("胡萝卜", 2, 10, "g");
 				break;
 			case 1 :
-				addMaterialToList("豆腐", 130, 300, "g");
-				addMaterialToList("辣椒", 35, 30, "g");
-				addMaterialToList("番茄", 28, 50, "g");
-				addMaterialToList("洋葱", 39, 10, "g");
-				addMaterialToList("胡萝卜", 26, 10, "g");
+				addMaterialToList("豆腐", 28, 300, "g");
+				addMaterialToList("辣椒", 7, 30, "g");
+				addMaterialToList("番茄", 3, 50, "g");
+				addMaterialToList("洋葱", 9, 10, "g");
+				addMaterialToList("胡萝卜", 2, 10, "g");
 				break;
 			case 2 :
-				addMaterialToList("米饭", 248, 300, "g");
-				addMaterialToList("辣椒", 35, 10, "g");
-				addMaterialToList("猪肉", 129, 100, "g");
-				addMaterialToList("洋葱", 39, 20, "g");
-				addMaterialToList("胡萝卜", 26, 20, "g");
+				addMaterialToList("米饭", 34, 300, "g");
+				addMaterialToList("辣椒", 7, 10, "g");
+				addMaterialToList("猪肉", 27, 100, "g");
+				addMaterialToList("洋葱", 9, 20, "g");
+				addMaterialToList("胡萝卜", 2, 20, "g");
 				break;
 			case 3 :
-				addMaterialToList("牛排", 129, 300, "g");
-				addMaterialToList("薄荷", 52, 5, "g");
-				addMaterialToList("洋葱", 39, 10, "g");
-				addMaterialToList("黑椒", 178, 5, "g");
+				addMaterialToList("牛排", 27, 300, "g");
+				addMaterialToList("薄荷", 16, 5, "g");
+				addMaterialToList("洋葱", 9, 10, "g");
+				addMaterialToList("黑椒", 30, 5, "g");
 				break;
 			case 4 :
-				addMaterialToList("牛肉", 129, 400, "g");
-				addMaterialToList("辣椒", 35, 10, "g");
-				addMaterialToList("黑椒", 178, 5, "g");
-				addMaterialToList("洋葱", 39, 10, "g");
-				addMaterialToList("胡萝卜", 26, 10, "g");
+				addMaterialToList("牛肉", 27, 400, "g");
+				addMaterialToList("辣椒", 7, 10, "g");
+				addMaterialToList("黑椒", 30, 5, "g");
+				addMaterialToList("洋葱", 9, 10, "g");
+				addMaterialToList("胡萝卜", 2, 10, "g");
 				break;
 			case 5 :
-				addMaterialToList("猪肉", 129, 100, "g");
-				addMaterialToList("鲜虾", 241, 100, "g");
-				addMaterialToList("鱼肉", 127, 100, "g");
-				addMaterialToList("番茄", 28, 50, "g");
-				addMaterialToList("洋葱", 39, 10, "g");
+				addMaterialToList("猪肉", 27, 100, "g");
+				addMaterialToList("鲜虾", 32, 100, "g");
+				addMaterialToList("鱼肉", 26, 100, "g");
+				addMaterialToList("番茄", 4, 50, "g");
+				addMaterialToList("洋葱", 9, 10, "g");
 				break;
 			case 6 :
-				addMaterialToList("鱼肉", 127, 400, "g");
-				addMaterialToList("高汤", 178, 200, "g");
-				addMaterialToList("洋葱", 39, 10, "g");
+				addMaterialToList("鱼肉", 26, 400, "g");
+				addMaterialToList("高汤", 30, 200, "g");
+				addMaterialToList("洋葱", 9, 10, "g");
 				break;
 			case 7 :
-				addMaterialToList("鱼排", 125, 300, "g");
-				addMaterialToList("香料", 51, 10, "g");
-				addMaterialToList("柠檬", 201, 10, "g");
+				addMaterialToList("鱼排", 25, 300, "g");
+				addMaterialToList("香料", 14, 10, "g");
+				addMaterialToList("柠檬", 31, 10, "g");
 				break;
 			case 8 :
-				addMaterialToList("米饭", 250, 300, "g");
-				addMaterialToList("鸡蛋", 59, 30, "g");
-				addMaterialToList("番茄", 28, 50, "g");
-				addMaterialToList("香菜", 53, 5, "g");
+				addMaterialToList("米饭", 34, 300, "g");
+				addMaterialToList("鸡蛋", 19, 30, "g");
+				addMaterialToList("番茄", 3, 50, "g");
+				addMaterialToList("香菜", 15, 5, "g");
 				break;
 			case 9 :
-				addMaterialToList("面条", 248, 300, "g");
-				addMaterialToList("培根", 129, 80, "g");
-				addMaterialToList("奶油", 178, 30, "g");
+				addMaterialToList("面条", 33, 300, "g");
+				addMaterialToList("培根", 27, 80, "g");
+				addMaterialToList("奶油", 18, 30, "g");
 				break;
 		}
 	}
@@ -295,8 +416,6 @@ public class MainActivity extends Activity {
 	private void setStepAdapter(List<StepListBean> list){
 		adapter_step = new StepListAdapter(getBaseContext(), list);
 		list_step.setAdapter(adapter_step);
-		// TODO test
-		list_step_edit.setAdapter(adapter_step);
 	}
 	
 	private void initStepList(){
@@ -399,4 +518,78 @@ public class MainActivity extends Activity {
 				break;
 		}
 	}
+	
+	private void showAddStepDialog(Context context) {  
+		final EditText editText = new EditText(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);  
+        builder.setTitle("输入步骤");  
+        //builder.setMessage("Message");  
+        builder.setView(editText);
+        builder.setPositiveButton("确定",  
+                new DialogInterface.OnClickListener() {  
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                    	addStepToList(editText.getText().toString());
+                    	list_step_edit.smoothScrollToPosition(bean_step.size()-1);
+                        dialog.dismiss();
+                    }  
+                });   
+        builder.setNegativeButton("取消",  
+                new DialogInterface.OnClickListener() {  
+                    public void onClick(DialogInterface dialog, int whichButton) {  
+                        dialog.dismiss();
+                    }  
+                });  
+        builder.show();  
+    }
+	
+	private void showFoodConfirmDialog(Context context){
+		AlertDialog.Builder builder = new AlertDialog.Builder(context);  
+		builder.setTitle("确认添加此菜谱？");
+		//builder.setMessage("确认添加此菜谱？");
+		builder.setPositiveButton("确认添加",  
+                new DialogInterface.OnClickListener() {  
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                    	isEdit = false;
+                    	
+                    	String food_name = et_food_name.getText().toString();
+                    	String food_effect = et_food_effect.getText().toString();
+                    	addFoodToList(food_name, food_effect, temp_icon_index, temp_rank_index);
+                    	
+    					btn_edit.setBackgroundResource(R.drawable.tab_default);
+    					layout_show.setVisibility(View.VISIBLE);
+    					layout_edit.setVisibility(View.INVISIBLE);
+    					btn_arrow.setVisibility(View.VISIBLE);
+    					
+    					showMaterial(last_position);
+    					showStep(last_position);
+
+    					list_food_name.smoothScrollToPosition(bean_food.size()-1);
+                        dialog.dismiss();
+                    }  
+                });   
+		builder.setNeutralButton("继续编辑",
+				new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.dismiss();
+					}
+				});
+        builder.setNegativeButton("放弃编辑",  
+                new DialogInterface.OnClickListener() {  
+                    public void onClick(DialogInterface dialog, int whichButton) {
+    					isEdit = false;
+    					btn_edit.setBackgroundResource(R.drawable.tab_default);
+    					layout_show.setVisibility(View.VISIBLE);
+    					layout_edit.setVisibility(View.INVISIBLE);
+    					btn_arrow.setVisibility(View.VISIBLE);
+    					
+    					showMaterial(last_position);
+    					showStep(last_position);                    	
+                    	
+                        dialog.dismiss();
+                    }  
+                });  
+        builder.show(); 
+	}
+	
 }
