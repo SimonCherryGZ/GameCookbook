@@ -13,11 +13,16 @@ import com.simoncherry.gamecookbook.Bean.StepListBean;
 import com.simoncherry.gamecookbook.Custom.IconSelectDialog;
 import com.simoncherry.gamecookbook.Custom.IconSelectDialog.OnIconSelectListener;
 import com.simoncherry.gamecookbook.Custom.MaterialEditDialog;
+import com.simoncherry.gamecookbook.Helper.SQLiteHelper;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -30,8 +35,16 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends Activity{
+	private static String DB_NAME = "gamecookbook.db";
+	private static int DB_VERSION = 1;
+	private static int POSTION;
+	private Cursor cursor;
+	private SQLiteDatabase db;
+	private SQLiteOpenHelper dbHelper;
+	
 	private ListView list_food_name;
 	private GridView list_material;
 	private ListView list_step;
@@ -250,13 +263,64 @@ public class MainActivity extends Activity{
 				builder.create().show();
 			}
 		});
+		
+		initFoodList();
+		try{
+			dbHelper = new SQLiteHelper(this, DB_NAME, null, DB_VERSION);
+    		db = dbHelper.getWritableDatabase();       	
+    		cursor = db.query(SQLiteHelper.TB_NAME, null, null, null, null, null, "name");
+        	cursor.moveToFirst();
+        	
+        	while(!cursor.isAfterLast() && (cursor.getString(1) != null)){
+        		addFoodToList(
+        				cursor.getString(1), cursor.getString(2),
+        				cursor.getInt(3), cursor.getInt(4),
+        				cursor.getString(5), cursor.getString(6));
+        		
+//        		int material_icon_index = 0;
+//        		String material_name = "";
+//        		int material_weight = 0;
+//        		String material_unit = "";
+//        		String material_code = cursor.getString(5);
+//        		for(int i=0; i<= material_code.length()-2;){
+//        			if(material_code.substring(i, i+1).equals("/")){
+//        				int start = i;
+//        				int end = material_code.indexOf("|", start);
+//        				material_icon_index = Integer.parseInt(
+//        						material_code.substring(start+1, end));
+//        				
+//        				start = end+1;
+//        				end = material_code.indexOf("|", start);
+//        				material_name = material_code.substring(start, end);
+//        				
+//        				start = end+1;
+//        				end = material_code.indexOf("|", start);
+//        				material_weight = Integer.parseInt(
+//        						material_code.substring(start, end));
+//        				
+//        				start = end+1;
+//        				end = material_code.indexOf("|", start);
+//        				material_unit = material_code.substring(start, end);
+//        				
+//        				i = i + end + 1;
+//        			}
+//        		}
+        		
+        		cursor.moveToNext();
+        	}
+        	
+		}catch(IllegalArgumentException e){
+    		e.printStackTrace();
+    		++ DB_VERSION;
+    		dbHelper.onUpgrade(db, --DB_VERSION, DB_VERSION);
+    	}
 	}
 	
 	@Override
 	protected void onResume() {
 		super.onResume();
 		
-		initFoodList();
+		//initFoodList();
 		initMaterialList();
 		initStepList();
 		
@@ -269,12 +333,14 @@ public class MainActivity extends Activity{
 		list_food_name.setAdapter(adapter_food);
 	}
 	
-	private void addFoodToList(String name, String effect, int img_index, int rank){
+	private void addFoodToList(String name, String effect, int img_index, int rank, String material, String step){
 		FoodListBean listbean = new FoodListBean();
 		listbean.setFoodName(name);
 		listbean.setFoodEffect(effect);
 		listbean.setFoodImgIndex(img_index);
 		listbean.setFoodRank(rank);
+		listbean.setFoodMaterial(material);
+		listbean.setFoodStep(step);
 		bean_food.add(listbean);
 		adapter_food.notifyDataSetChanged();
 	}
@@ -283,20 +349,20 @@ public class MainActivity extends Activity{
 		bean_food = new ArrayList<FoodListBean>();
 		setFoodAdapter(bean_food);
 
-		addFoodToList("龙老汤面", "HP恢复40%", 1, 2);
-		addFoodToList("药膳麻婆豆腐", "异常状态抵抗提示30%", 2, 3);
-		addFoodToList("猛虎炒饭", "ATK提升50%", 3, 2);
-		addFoodToList("多汁牛排", "HP恢复100%", 5, 7);
-		addFoodToList("特制炖牛肉", "HP恢复80%", 4, 6);
-		addFoodToList("杂锦肉锅", "HP恢复30%、SP恢复30%", 2, 5);
-		addFoodToList("浓汤炖鱼锅", "异常状态恢复", 8, 5);
-		addFoodToList("香酥炸鱼排", "会心一击率提升25%", 6, 3);
-		addFoodToList("田园蛋包饭", "DEF提升20%", 7, 4);
-		addFoodToList("会心奶酪培根面", "HP恢复30%", 1, 1);
-		
-		setHighLightItem(0);
-		setFoodImg(bean_food.get(0).getFoodImgIndex());
-		setFoodRank(bean_food.get(0).getFoodRank());
+//		addFoodToList("龙老汤面", "HP恢复40%", 1, 2);
+//		addFoodToList("药膳麻婆豆腐", "异常状态抵抗提示30%", 2, 3);
+//		addFoodToList("猛虎炒饭", "ATK提升50%", 3, 2);
+//		addFoodToList("多汁牛排", "HP恢复100%", 5, 7);
+//		addFoodToList("特制炖牛肉", "HP恢复80%", 4, 6);
+//		addFoodToList("杂锦肉锅", "HP恢复30%、SP恢复30%", 2, 5);
+//		addFoodToList("浓汤炖鱼锅", "异常状态恢复", 8, 5);
+//		addFoodToList("香酥炸鱼排", "会心一击率提升25%", 6, 3);
+//		addFoodToList("田园蛋包饭", "DEF提升20%", 7, 4);
+//		addFoodToList("会心奶酪培根面", "HP恢复30%", 1, 1);
+//		
+//		setHighLightItem(0);
+//		setFoodImg(bean_food.get(0).getFoodImgIndex());
+//		setFoodRank(bean_food.get(0).getFoodRank());
 	}
 	
 	private void setFoodImg(int index){
@@ -347,69 +413,103 @@ public class MainActivity extends Activity{
 		if(bean_material.size() > 0){
 			bean_material.clear();
 		}
-		switch(index){
-			case 0 :
-				addMaterialToList("面条", 33, 300, "g");
-				addMaterialToList("鲜虾", 32, 200, "g");
-				addMaterialToList("鱼肉", 26, 200, "g");
-				addMaterialToList("洋葱", 9, 10, "g");
-				addMaterialToList("胡萝卜", 2, 10, "g");
-				break;
-			case 1 :
-				addMaterialToList("豆腐", 28, 300, "g");
-				addMaterialToList("辣椒", 7, 30, "g");
-				addMaterialToList("番茄", 3, 50, "g");
-				addMaterialToList("洋葱", 9, 10, "g");
-				addMaterialToList("胡萝卜", 2, 10, "g");
-				break;
-			case 2 :
-				addMaterialToList("米饭", 34, 300, "g");
-				addMaterialToList("辣椒", 7, 10, "g");
-				addMaterialToList("猪肉", 27, 100, "g");
-				addMaterialToList("洋葱", 9, 20, "g");
-				addMaterialToList("胡萝卜", 2, 20, "g");
-				break;
-			case 3 :
-				addMaterialToList("牛排", 27, 300, "g");
-				addMaterialToList("薄荷", 16, 5, "g");
-				addMaterialToList("洋葱", 9, 10, "g");
-				addMaterialToList("黑椒", 30, 5, "g");
-				break;
-			case 4 :
-				addMaterialToList("牛肉", 27, 400, "g");
-				addMaterialToList("辣椒", 7, 10, "g");
-				addMaterialToList("黑椒", 30, 5, "g");
-				addMaterialToList("洋葱", 9, 10, "g");
-				addMaterialToList("胡萝卜", 2, 10, "g");
-				break;
-			case 5 :
-				addMaterialToList("猪肉", 27, 100, "g");
-				addMaterialToList("鲜虾", 32, 100, "g");
-				addMaterialToList("鱼肉", 26, 100, "g");
-				addMaterialToList("番茄", 4, 50, "g");
-				addMaterialToList("洋葱", 9, 10, "g");
-				break;
-			case 6 :
-				addMaterialToList("鱼肉", 26, 400, "g");
-				addMaterialToList("高汤", 30, 200, "g");
-				addMaterialToList("洋葱", 9, 10, "g");
-				break;
-			case 7 :
-				addMaterialToList("鱼排", 25, 300, "g");
-				addMaterialToList("香料", 14, 10, "g");
-				addMaterialToList("柠檬", 31, 10, "g");
-				break;
-			case 8 :
-				addMaterialToList("米饭", 34, 300, "g");
-				addMaterialToList("鸡蛋", 19, 30, "g");
-				addMaterialToList("番茄", 3, 50, "g");
-				addMaterialToList("香菜", 15, 5, "g");
-				break;
-			case 9 :
-				addMaterialToList("面条", 33, 300, "g");
-				addMaterialToList("培根", 27, 80, "g");
-				addMaterialToList("奶油", 18, 30, "g");
-				break;
+//		switch(index){
+//			case 0 :
+//				addMaterialToList("面条", 33, 300, "g");
+//				addMaterialToList("鲜虾", 32, 200, "g");
+//				addMaterialToList("鱼肉", 26, 200, "g");
+//				addMaterialToList("洋葱", 9, 10, "g");
+//				addMaterialToList("胡萝卜", 2, 10, "g");
+//				break;
+//			case 1 :
+//				addMaterialToList("豆腐", 28, 300, "g");
+//				addMaterialToList("辣椒", 7, 30, "g");
+//				addMaterialToList("番茄", 3, 50, "g");
+//				addMaterialToList("洋葱", 9, 10, "g");
+//				addMaterialToList("胡萝卜", 2, 10, "g");
+//				break;
+//			case 2 :
+//				addMaterialToList("米饭", 34, 300, "g");
+//				addMaterialToList("辣椒", 7, 10, "g");
+//				addMaterialToList("猪肉", 27, 100, "g");
+//				addMaterialToList("洋葱", 9, 20, "g");
+//				addMaterialToList("胡萝卜", 2, 20, "g");
+//				break;
+//			case 3 :
+//				addMaterialToList("牛排", 27, 300, "g");
+//				addMaterialToList("薄荷", 16, 5, "g");
+//				addMaterialToList("洋葱", 9, 10, "g");
+//				addMaterialToList("黑椒", 30, 5, "g");
+//				break;
+//			case 4 :
+//				addMaterialToList("牛肉", 27, 400, "g");
+//				addMaterialToList("辣椒", 7, 10, "g");
+//				addMaterialToList("黑椒", 30, 5, "g");
+//				addMaterialToList("洋葱", 9, 10, "g");
+//				addMaterialToList("胡萝卜", 2, 10, "g");
+//				break;
+//			case 5 :
+//				addMaterialToList("猪肉", 27, 100, "g");
+//				addMaterialToList("鲜虾", 32, 100, "g");
+//				addMaterialToList("鱼肉", 26, 100, "g");
+//				addMaterialToList("番茄", 4, 50, "g");
+//				addMaterialToList("洋葱", 9, 10, "g");
+//				break;
+//			case 6 :
+//				addMaterialToList("鱼肉", 26, 400, "g");
+//				addMaterialToList("高汤", 30, 200, "g");
+//				addMaterialToList("洋葱", 9, 10, "g");
+//				break;
+//			case 7 :
+//				addMaterialToList("鱼排", 25, 300, "g");
+//				addMaterialToList("香料", 14, 10, "g");
+//				addMaterialToList("柠檬", 31, 10, "g");
+//				break;
+//			case 8 :
+//				addMaterialToList("米饭", 34, 300, "g");
+//				addMaterialToList("鸡蛋", 19, 30, "g");
+//				addMaterialToList("番茄", 3, 50, "g");
+//				addMaterialToList("香菜", 15, 5, "g");
+//				break;
+//			case 9 :
+//				addMaterialToList("面条", 33, 300, "g");
+//				addMaterialToList("培根", 27, 80, "g");
+//				addMaterialToList("奶油", 18, 30, "g");
+//				break;
+//		}
+		
+		int material_icon_index = 0;
+		String material_name = "";
+		int material_weight = 0;
+		String material_unit = "";
+		
+		String material_code = bean_food.get(index).getFoodMaterial();
+		
+		for(int i=0; i<= material_code.length()-2;){
+			if(material_code.substring(i, i+1).equals("/")){
+				int start = i;
+				int end = material_code.indexOf("|", start);
+				material_icon_index = Integer.parseInt(
+						material_code.substring(start+1, end));
+				
+				start = end+1;
+				end = material_code.indexOf("|", start);
+				material_name = material_code.substring(start, end);
+				
+				start = end+1;
+				end = material_code.indexOf("|", start);
+				material_weight = Integer.parseInt(
+						material_code.substring(start, end));
+				
+				start = end+1;
+				end = material_code.indexOf("|", start);
+				material_unit = material_code.substring(start, end);
+				
+				addMaterialToList(
+						material_name, material_icon_index, 
+						material_weight, material_unit);
+				i = end + 1;
+			}
 		}
 	}
 	
@@ -439,83 +539,97 @@ public class MainActivity extends Activity{
 			bean_step.clear();
 		}
 		
-		switch(index){
-			case 0 :
-				addStepToList("大虾去掉虾足、肠线，洗净");
-				addStepToList("炒锅倒油，放入姜丝，虾略微煎一下");
-				addStepToList("煎出红色的虾油后倒入水，加盐、生抽");
-				addStepToList("水沸后煮面");
-				addStepToList("面条煮熟后放入生菜略煮");
-				break;
-			case 1 :
-				addStepToList("豆腐切小块，开水放少许盐煮5分钟，捞出备用");
-				addStepToList("准备蒜末，姜末");
-				addStepToList("油热后转小火，炒豆瓣酱");
-				addStepToList("出红油后放入蒜末，姜末");
-				addStepToList("放适量水，盐，糖，鸡精，花椒粉调味");
-				addStepToList("倒入豆腐大火烧开转小火，继续炖5分钟，使其入味");
-				addStepToList("调好淀粉，倒入锅中");
-				addStepToList("大火勾芡，出锅");
-				break;
-			case 2 :
-				addStepToList("青椒洗净切沫葱切沫备用要");
-				addStepToList("肉洗净切沫腌上加黄酒生抽白胡椒");
-				addStepToList("锅内放油煸葱煸肉丝");
-				addStepToList("鸡蛋打散炒岀来备用");
-				addStepToList("肉煸岀香味放米饭炒");
-				addStepToList("放炒好鸡蛋放盐炒３分钟左右即可盛岀");
-				break;
-			case 3 :
-				addStepToList("腌渍牛排4个小时");
-				addStepToList("将腌制好的牛排放进烤箱加热5分钟");
-				addStepToList("平底锅放入黄油，将牛排的表面2分钟");
-				addStepToList("将洋葱和蘑菇切好，锅里放油，先炒洋葱，再加入蘑菇，最后倒入黑椒汁翻炒");
-				break;
-			case 4 :
-				addStepToList("牛肉清洗干净");
-				addStepToList("切成3厘米见方的肉块");
-				addStepToList("将牛肉及调料品一同入锅中，水可以多加一些");
-				addStepToList("放入炖锅炖1.5小时");
-				addStepToList("待水开后，撇去浮沫，继续慢炖，盐可以根据口味来添加");
-				break;
-			case 5 :
-				addStepToList("将冬菇、金针、云耳水发好，咸肉切断几段");
-				addStepToList("放小许油，放几片姜在小煲里爆一爆");
-				addStepToList("再加入咸肉段，爆一小会");
-				addStepToList("再放入冬菇、金针、云耳");
-				addStepToList("加生抽、盐、糖焖，焖到入味放豆腐块滚几滚，上煲");
-				break;
-			case 6 :
-				addStepToList("锅里放入适量的鸡油");
-				addStepToList("鲫鱼用厨房纸擦干后，放入锅里煎");
-				addStepToList("两面金黄后，把姜丝、葱段放旁边煸炒一下");
-				addStepToList("兑足量的热水大火煮沸，撇去浮沫");
-				addStepToList("小火炖到汤汁奶白，调入盐黑胡椒煮开即可，起锅放香油");
-				break;
-			case 7 :
-				addStepToList("鱼排切块");
-				addStepToList("用盐，酱油，鸡精，十三香，辣椒粉，料酒");
-				addStepToList("拌匀腌制一到半天入味");
-				addStepToList("然后放进浇至八成热的油锅里");
-				addStepToList("炸金黄炸熟透");
-				break;
-			case 8 :
-				addStepToList("熟的冷冻豌豆用开水烫一下进行解冻，再沥干水份待用");
-				addStepToList("洋葱洗净切丁、午餐肉切丁");
-				addStepToList("锅内倒少量油，倒入洋葱和午餐肉翻炒");
-				addStepToList("然后加入米饭、番茄酱、酱油和沥干水的豌豆翻炒均匀");
-				addStepToList("三个鸡蛋加一点盐打散");
-				addStepToList("平底锅里到一点油小火烧热，倒入一半的蛋液后晃动锅子摊一张蛋饼");
-				addStepToList("放上适量的炒好的米饭，左右两边的蛋饼向上折，然后盛到盘子里用蕃茄酱装饰一下");
-				break;
-			case 9 :
-				addStepToList("准备材料：芦笋洗净切小段；三文鱼切小条");
-				addStepToList("热锅，锅内放黄油");
-				addStepToList("倒入牛奶");
-				addStepToList("倒入奶油");
-				addStepToList("开锅后放入芦笋和三文鱼");
-				addStepToList("放入莳萝，黑胡椒，盐调味。 放入煮好的意大利面，收汤后即可");
-				break;
+//		switch(index){
+//			case 0 :
+//				addStepToList("大虾去掉虾足、肠线，洗净");
+//				addStepToList("炒锅倒油，放入姜丝，虾略微煎一下");
+//				addStepToList("煎出红色的虾油后倒入水，加盐、生抽");
+//				addStepToList("水沸后煮面");
+//				addStepToList("面条煮熟后放入生菜略煮");
+//				break;
+//			case 1 :
+//				addStepToList("豆腐切小块，开水放少许盐煮5分钟，捞出备用");
+//				addStepToList("准备蒜末，姜末");
+//				addStepToList("油热后转小火，炒豆瓣酱");
+//				addStepToList("出红油后放入蒜末，姜末");
+//				addStepToList("放适量水，盐，糖，鸡精，花椒粉调味");
+//				addStepToList("倒入豆腐大火烧开转小火，继续炖5分钟，使其入味");
+//				addStepToList("调好淀粉，倒入锅中");
+//				addStepToList("大火勾芡，出锅");
+//				break;
+//			case 2 :
+//				addStepToList("青椒洗净切沫葱切沫备用要");
+//				addStepToList("肉洗净切沫腌上加黄酒生抽白胡椒");
+//				addStepToList("锅内放油煸葱煸肉丝");
+//				addStepToList("鸡蛋打散炒岀来备用");
+//				addStepToList("肉煸岀香味放米饭炒");
+//				addStepToList("放炒好鸡蛋放盐炒３分钟左右即可盛岀");
+//				break;
+//			case 3 :
+//				addStepToList("腌渍牛排4个小时");
+//				addStepToList("将腌制好的牛排放进烤箱加热5分钟");
+//				addStepToList("平底锅放入黄油，将牛排的表面2分钟");
+//				addStepToList("将洋葱和蘑菇切好，锅里放油，先炒洋葱，再加入蘑菇，最后倒入黑椒汁翻炒");
+//				break;
+//			case 4 :
+//				addStepToList("牛肉清洗干净");
+//				addStepToList("切成3厘米见方的肉块");
+//				addStepToList("将牛肉及调料品一同入锅中，水可以多加一些");
+//				addStepToList("放入炖锅炖1.5小时");
+//				addStepToList("待水开后，撇去浮沫，继续慢炖，盐可以根据口味来添加");
+//				break;
+//			case 5 :
+//				addStepToList("将冬菇、金针、云耳水发好，咸肉切断几段");
+//				addStepToList("放小许油，放几片姜在小煲里爆一爆");
+//				addStepToList("再加入咸肉段，爆一小会");
+//				addStepToList("再放入冬菇、金针、云耳");
+//				addStepToList("加生抽、盐、糖焖，焖到入味放豆腐块滚几滚，上煲");
+//				break;
+//			case 6 :
+//				addStepToList("锅里放入适量的鸡油");
+//				addStepToList("鲫鱼用厨房纸擦干后，放入锅里煎");
+//				addStepToList("两面金黄后，把姜丝、葱段放旁边煸炒一下");
+//				addStepToList("兑足量的热水大火煮沸，撇去浮沫");
+//				addStepToList("小火炖到汤汁奶白，调入盐黑胡椒煮开即可，起锅放香油");
+//				break;
+//			case 7 :
+//				addStepToList("鱼排切块");
+//				addStepToList("用盐，酱油，鸡精，十三香，辣椒粉，料酒");
+//				addStepToList("拌匀腌制一到半天入味");
+//				addStepToList("然后放进浇至八成热的油锅里");
+//				addStepToList("炸金黄炸熟透");
+//				break;
+//			case 8 :
+//				addStepToList("熟的冷冻豌豆用开水烫一下进行解冻，再沥干水份待用");
+//				addStepToList("洋葱洗净切丁、午餐肉切丁");
+//				addStepToList("锅内倒少量油，倒入洋葱和午餐肉翻炒");
+//				addStepToList("然后加入米饭、番茄酱、酱油和沥干水的豌豆翻炒均匀");
+//				addStepToList("三个鸡蛋加一点盐打散");
+//				addStepToList("平底锅里到一点油小火烧热，倒入一半的蛋液后晃动锅子摊一张蛋饼");
+//				addStepToList("放上适量的炒好的米饭，左右两边的蛋饼向上折，然后盛到盘子里用蕃茄酱装饰一下");
+//				break;
+//			case 9 :
+//				addStepToList("准备材料：芦笋洗净切小段；三文鱼切小条");
+//				addStepToList("热锅，锅内放黄油");
+//				addStepToList("倒入牛奶");
+//				addStepToList("倒入奶油");
+//				addStepToList("开锅后放入芦笋和三文鱼");
+//				addStepToList("放入莳萝，黑胡椒，盐调味。 放入煮好的意大利面，收汤后即可");
+//				break;
+//		}
+		
+		String step_decode = "";
+		String step_code = bean_food.get(index).getFoodStep();
+		
+		for(int i=0; i<= step_code.length()-2;){
+			if(step_code.substring(i, i+1).equals("/")){
+				int start = i;
+				int end = step_code.indexOf("|", start);
+				step_decode = step_code.substring(start+1, end);
+				
+				addStepToList(step_decode);
+				i = end + 1;
+			}
 		}
 	}
 	
@@ -549,21 +663,79 @@ public class MainActivity extends Activity{
 		builder.setPositiveButton("确认添加",  
                 new DialogInterface.OnClickListener() {  
                     public void onClick(DialogInterface dialog, int whichButton) {
+//                    	isEdit = false;
+//                    	
+//                    	String food_name = et_food_name.getText().toString();
+//                    	String food_effect = et_food_effect.getText().toString();
+//                    	addFoodToList(food_name, food_effect, temp_icon_index, temp_rank_index);
+//                    	
+//    					btn_edit.setBackgroundResource(R.drawable.tab_default);
+//    					layout_show.setVisibility(View.VISIBLE);
+//    					layout_edit.setVisibility(View.INVISIBLE);
+//    					btn_arrow.setVisibility(View.VISIBLE);
+//    					
+//    					showMaterial(last_position);
+//    					showStep(last_position);
+//
+//    					list_food_name.smoothScrollToPosition(bean_food.size()-1);
+                    	
+                    	if(
+                			et_food_name.getText().length()>1 &&
+                			et_food_effect.getText().length()>1 &&
+                			bean_material.size()>0 && 
+                			bean_step.size()>0){
+                    		
+                    			String name = et_food_name.getText().toString();
+                    			String effect = et_food_effect.getText().toString();
+                    			int imgid = temp_icon_index;
+                    			int rank = temp_rank_index;
+
+	                    		String material_code = "";
+	                    		for(int i=0; i<bean_material.size(); i++){
+	                    			int icon_index = bean_material.get(i).getMaterialImgIndex();
+	                    			String material_name = bean_material.get(i).getMaterialName();
+	                    			int material_weight = bean_material.get(i).getMaterialWeight();
+	                    			String material_unit = bean_material.get(i).getMaterialUnit();
+	                    			
+	                    			String code = "/" + String.valueOf(icon_index) + "|" 
+	                    					+ material_name + "|"
+	                    					+ String.valueOf(material_weight) + "|"
+	                    					+ material_unit + "|";
+	                    			
+	                    			material_code += code;
+	                    		}
+	                    		
+	                    		String step_code = "";
+	                    		for(int i=0; i<bean_step.size(); i++){
+	                    			String step_text = bean_step.get(i).getStepText();
+	                    			
+	                    			String code = "/" + step_text + "|";
+	                    			
+	                    			step_code += code;
+	                    		}
+	                    		
+	                    		ContentValues value = new ContentValues();
+	                    		value.put("name", name);
+	                    		value.put("effect", effect);
+	                    		value.put("imgid", imgid);
+	                    		value.put("rank", rank);
+	                    		value.put("material", material_code);
+	                    		value.put("step", step_code);
+	                    		Long cookbookID = db.insert(SQLiteHelper.TB_NAME, "id", value);
+	                    		
+	                    		addFoodToList( name, effect, imgid, rank,
+	                    				material_code, step_code);
+                    		
+                    	}else{
+                    		Toast.makeText(getApplicationContext(), "添加内容为空！", Toast.LENGTH_LONG).show();
+                    	}
+                    	
                     	isEdit = false;
-                    	
-                    	String food_name = et_food_name.getText().toString();
-                    	String food_effect = et_food_effect.getText().toString();
-                    	addFoodToList(food_name, food_effect, temp_icon_index, temp_rank_index);
-                    	
     					btn_edit.setBackgroundResource(R.drawable.tab_default);
     					layout_show.setVisibility(View.VISIBLE);
     					layout_edit.setVisibility(View.INVISIBLE);
-    					btn_arrow.setVisibility(View.VISIBLE);
-    					
-    					showMaterial(last_position);
-    					showStep(last_position);
-
-    					list_food_name.smoothScrollToPosition(bean_food.size()-1);
+    					btn_arrow.setVisibility(View.VISIBLE);                   
+                    	
                         dialog.dismiss();
                     }  
                 });   

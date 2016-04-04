@@ -2,11 +2,41 @@ package com.simoncherry.gamecookbook.Bean;
 
 
 public class FoodListBean{
+	private String id;
+	
 	private String food_name;
 	private String food_effect;
 	private int img_index;
 	private int food_rank;
+	private String food_material;
+	private String food_step;
 	private boolean isHighLight = false;
+	
+	
+	public void setId(String id){
+		this.id = id;
+	}
+	
+	public String getId(){
+		return this.id;
+	}
+	
+	public void setFoodMaterial(String material){
+		this.food_material = material;
+	}
+	
+	public String getFoodMaterial(){
+		return this.food_material;
+	}
+	
+	public void setFoodStep(String step){
+		this.food_step = step;
+	}
+	
+	public String getFoodStep(){
+		return this.food_step;
+	}
+	
 	
 	public void setFoodName(String name){
 		this.food_name = name;
