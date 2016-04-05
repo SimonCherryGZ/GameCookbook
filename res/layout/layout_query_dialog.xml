@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>  
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    
+    <EditText 
+	    android:id="@+id/et_query_name"
+	    android:layout_width="200dp"
+	    android:layout_height="wrap_content"
+	    android:layout_toRightOf="@+id/textView1"
+	    android:layout_marginLeft="10dp"
+	    android:layout_alignParentTop="true"
+	    android:layout_marginTop="10dp" />
+    
+	<EditText 
+	    android:id="@+id/et_query_material"
+	    android:layout_width="200dp"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@id/et_query_name"
+	    android:layout_alignLeft="@id/et_query_name"
+	    android:layout_marginTop="10dp" />
+
+	<EditText 
+	    android:id="@+id/et_query_effect"
+	    android:layout_width="200dp"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@id/et_query_material"
+	    android:layout_alignLeft="@id/et_query_material"
+	    android:layout_marginTop="10dp" />
+	
+	<TextView
+	    android:id="@+id/textView1"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignBottom="@+id/et_query_name"
+	    android:layout_alignLeft="@+id/view_divider"
+	    android:textSize="20sp"
+	    android:text="菜名：" />
+
+	<TextView
+	    android:id="@+id/textView2"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignBottom="@+id/et_query_material"
+	    android:layout_alignLeft="@+id/view_divider"
+	    android:textSize="20sp"
+	    android:text="食材：" />
+	
+	<TextView
+	    android:id="@+id/textView3"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignBottom="@+id/et_query_effect"
+	    android:layout_alignLeft="@+id/view_divider"
+	    android:textSize="20sp"
+	    android:text="效果：" />
+	
+	<View 
+	    android:id="@+id/view_divider"
+	    android:layout_width="275dp"
+	    android:layout_height="1dp"
+	    android:layout_below="@id/textView3"
+	    android:layout_centerHorizontal="true"
+	    android:layout_marginTop="10dp"
+	    android:background="#c0c0c0" />
+
+	<Button
+	    android:id="@+id/btn_ok"
+	    android:layout_width="100dp"
+	    android:layout_height="wrap_content"
+	    android:layout_alignLeft="@+id/view_divider"
+	    android:layout_below="@+id/view_divider"
+	    android:layout_marginLeft="20dp"
+	    android:layout_marginTop="10dp"
+	    android:text="查询" />
+
+	<Button
+	    android:id="@+id/btn_cancel"
+	    android:layout_width="100dp"
+	    android:layout_height="wrap_content"
+	    android:layout_alignRight="@+id/view_divider"
+	    android:layout_below="@+id/view_divider"
+	    android:layout_marginRight="20dp"
+	    android:layout_marginTop="10dp"
+	    android:text="取消" />
+    
+</RelativeLayout> 

@@ -42,7 +42,7 @@
         android:layout_height="280dp"
         android:layout_marginTop="40dp"
         android:layout_toRightOf="@+id/list_food_name"
-        android:visibility="visible" >
+        android:visibility="invisible" >
         
         <EditText 
             android:id="@+id/et_food_name"
@@ -182,7 +182,7 @@
         android:layout_height="280dp"
         android:layout_marginTop="40dp"
         android:layout_toRightOf="@+id/list_food_name"
-        android:visibility="invisible" >
+        android:visibility="visible" >
 
         <TextView
             android:id="@+id/tv_food_name"
@@ -341,7 +341,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginLeft="5dp"
         android:layout_marginTop="5dp"
-        android:background="@drawable/tab_default"
+        android:background="@drawable/btn_tab"
         android:textColor="@color/tv_default_color"
         android:textStyle="bold"
         android:textSize="16sp"

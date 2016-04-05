@@ -169,6 +169,7 @@ public class MaterialEditDialog extends Dialog{
 			lp.width = (int) 900;
 			lp.height = (int) 620;
 	        win.setAttributes(lp);
+	        
 			dialog.setContentView(layout);
 			return dialog;
 		}
