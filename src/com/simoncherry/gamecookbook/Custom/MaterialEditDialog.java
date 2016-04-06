@@ -185,7 +185,7 @@ public class MaterialEditDialog extends Dialog{
 			
 			Resources res = context.getResources();
 			
-			for(int i=1; i<=34; i++){
+			for(int i=1; i<=53; i++){
 				String img_name = "icon" + String.valueOf(i);
 				int img_id = res.getIdentifier(img_name, "drawable", context.getPackageName());
 				addIconToList(img_id);

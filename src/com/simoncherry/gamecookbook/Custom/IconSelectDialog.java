@@ -90,7 +90,7 @@ public class IconSelectDialog extends Dialog{
 			Resources res = context.getResources();
 			
 			if(type == 0){
-				for(int i=1; i<= 8; i++){
+				for(int i=1; i<= 23; i++){
 					String img_name = "food" + String.valueOf(i);
 					int img_id = res.getIdentifier(img_name, "drawable", context.getPackageName());
 					addIconToList(img_id);

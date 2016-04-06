@@ -42,7 +42,7 @@ import android.widget.Toast;
 public class MainActivity extends Activity{
 	private static String DB_NAME = "gamecookbook.db";
 	private static int DB_VERSION = 1;
-	private static int POSTION;
+
 	private Cursor cursor;
 	private SQLiteDatabase db;
 	private SQLiteOpenHelper dbHelper;
@@ -84,6 +84,7 @@ public class MainActivity extends Activity{
 	private int page = 1;
 	private int last_position = 0;
 	private boolean isEdit = false;
+	private boolean isModify = false;
 	private int temp_icon_index = 0;
 	private int temp_rank_index = 0;
 	
@@ -134,8 +135,61 @@ public class MainActivity extends Activity{
 			@Override
 			public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
 				// TODO
+				last_position = position;
 				showEditFoodConfirmDialog(MainActivity.this, position);
 				return true;
+			}			
+		});
+		
+		list_material_edit.setOnItemClickListener(new OnItemClickListener(){
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+				AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+				builder.setTitle("要删除该条目吗？");
+				builder.setPositiveButton("删除", new DialogInterface.OnClickListener() {				
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						// TODO Auto-generated method stub
+						bean_material.remove(position);
+						adapter_material.notifyDataSetChanged();
+						dialog.dismiss();
+					}
+				});
+				
+				builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.dismiss();
+					}
+				});
+				
+				builder.show();
+			}
+		});
+		
+		list_step_edit.setOnItemClickListener(new OnItemClickListener(){
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+				AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+				builder.setTitle("要删除该条目吗？");
+				builder.setPositiveButton("删除", new DialogInterface.OnClickListener() {				
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						// TODO Auto-generated method stub
+						bean_step.remove(position);
+						adapter_step.notifyDataSetChanged();
+						dialog.dismiss();
+					}
+				});
+				
+				builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.dismiss();
+					}
+				});
+				
+				builder.show();
 			}			
 		});
 		
@@ -160,23 +214,33 @@ public class MainActivity extends Activity{
 		btn_edit.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) {
-				if(isEdit == false){
+				if(isEdit == false && isModify == false){
 					isEdit = true;
 					btn_edit.setBackgroundResource(R.drawable.tab_pressed);
 					layout_show.setVisibility(View.INVISIBLE);
 					layout_edit.setVisibility(View.VISIBLE);
 					btn_arrow.setVisibility(View.INVISIBLE);
 					
-					bean_step = new ArrayList<StepListBean>();
-					adapter_step = new StepListAdapter(getBaseContext(), bean_step);
-					list_step_edit.setAdapter(adapter_step);
+					//bean_step = new ArrayList<StepListBean>();
+					//adapter_step = new StepListAdapter(getBaseContext(), bean_step);
+					//list_step_edit.setAdapter(adapter_step);
+					bean_step.clear();
+					adapter_step.notifyDataSetChanged();
 					
-					bean_material = new ArrayList<MaterialListBean>();
-					adapter_material = new MaterialListAdapter(getBaseContext(), bean_material);
-					list_material_edit.setAdapter(adapter_material);
+					//bean_material = new ArrayList<MaterialListBean>();
+					//adapter_material = new MaterialListAdapter(getBaseContext(), bean_material);
+					//list_material_edit.setAdapter(adapter_material);
+					bean_material.clear();
+					adapter_material.notifyDataSetChanged();
+					
 				}else{
-					
-					showAddFoodConfirmDialog(MainActivity.this);
+					int type = 0;
+					if(isEdit == true){
+						type = 0;
+					}else if(isModify == true){
+						type = 1;
+					}
+					showAddFoodConfirmDialog(MainActivity.this, type);
 				}
 			}
 		});
@@ -279,11 +343,34 @@ public class MainActivity extends Activity{
 						String query_material = builder.getQueryMaterial();
 						String query_effect = builder.getQueryEffect();
 						
-						query_name = "name" + " like " + "'%" + query_name + "%'";
-						query_material = "material" + " like " + "'%" + query_material + "%'";
-						query_effect = "effect" + " like " + "'%" + query_effect + "%'";
+//						query_name = "name" + " like " + "'%" + query_name + "%'";
+//						query_material = "material" + " like " + "'%" + query_material + "%'";
+//						query_effect = "effect" + " like " + "'%" + query_effect + "%'";
+//						
+//						String query_string = query_name + " and " + query_material + " and " + query_effect;
 						
-						String query_string = query_name + " and " + query_material + " and " + query_effect;
+						String query_string = "";
+						int start = 0;
+						int end = query_material.indexOf(" ", start);
+						
+						if(end == -1){
+							query_material = "material like '%" + query_material + "%'";
+							query_string = query_material;
+						}else{
+							query_string = "material like '%" + query_material.substring(start, end) + "%'";
+							start = end+1;
+							end = query_material.indexOf(" ", start);
+							while(end != -1){
+								query_string += " and material like '%" + query_material.substring(start, end) + "%'";
+								start = end+1;
+								end = query_material.indexOf(" ", start);
+							}
+							
+							query_string += " and material like '%" + query_material.substring(start, query_material.length()) + "%'";
+						}
+
+						Toast.makeText(getBaseContext(), query_string, Toast.LENGTH_LONG).show();
+						
 						cursor = db.query(true, SQLiteHelper.TB_NAME, null,
 								query_string, null, null, null, null, null);
 						cursor.moveToFirst();
@@ -388,7 +475,7 @@ public class MainActivity extends Activity{
 	}
 	
 	private void setFoodRank(int rank){
-		String img_name = "logo_rank_" + String.valueOf(rank+1);
+		String img_name = "logo_rank_" + String.valueOf(rank);
 		int img_id = getResources().getIdentifier(img_name, "drawable", getPackageName());
 		img_rank.setImageResource(img_id);
 	}
@@ -407,6 +494,7 @@ public class MainActivity extends Activity{
 	private void setMaterialAdapter(List<MaterialListBean> list){
 		adapter_material = new MaterialListAdapter(getBaseContext(), list);
 		list_material.setAdapter(adapter_material);
+		list_material_edit.setAdapter(adapter_material);
 	}
 	
 	private void addMaterialToList(String name, int img_index, int weight, String unit){
@@ -467,6 +555,7 @@ public class MainActivity extends Activity{
 	private void setStepAdapter(List<StepListBean> list){
 		adapter_step = new StepListAdapter(getBaseContext(), list);
 		list_step.setAdapter(adapter_step);
+		list_step_edit.setAdapter(adapter_step);
 	}
 	
 	private void initStepList(){
@@ -527,29 +616,20 @@ public class MainActivity extends Activity{
         builder.show();  
     }
 	
-	private void showAddFoodConfirmDialog(Context context){
+	private void showAddFoodConfirmDialog(Context context, final int type){
 		AlertDialog.Builder builder = new AlertDialog.Builder(context);  
-		builder.setTitle("确认添加此菜谱？");
-		//builder.setMessage("确认添加此菜谱？");
-		builder.setPositiveButton("确认添加",  
+		String title;
+		if(type == 0){
+			title = "确认添加此菜谱？";
+		}else{
+			title = "确认修改此菜谱？";
+		}
+		
+		builder.setTitle(title);
+		builder.setPositiveButton("确定操作",  
                 new DialogInterface.OnClickListener() {  
                     public void onClick(DialogInterface dialog, int whichButton) {
-//                    	isEdit = false;
-//                    	
-//                    	String food_name = et_food_name.getText().toString();
-//                    	String food_effect = et_food_effect.getText().toString();
-//                    	addFoodToList(food_name, food_effect, temp_icon_index, temp_rank_index);
-//                    	
-//    					btn_edit.setBackgroundResource(R.drawable.tab_default);
-//    					layout_show.setVisibility(View.VISIBLE);
-//    					layout_edit.setVisibility(View.INVISIBLE);
-//    					btn_arrow.setVisibility(View.VISIBLE);
-//    					
-//    					showMaterial(last_position);
-//    					showStep(last_position);
-//
-//    					list_food_name.smoothScrollToPosition(bean_food.size()-1);
-                    	
+
                     	if(
                 			et_food_name.getText().length()>1 &&
                 			et_food_effect.getText().length()>1 &&
@@ -592,23 +672,48 @@ public class MainActivity extends Activity{
 	                    		value.put("rank", rank);
 	                    		value.put("material", material_code);
 	                    		value.put("step", step_code);
-	                    		Long cookbookID = db.insert(SQLiteHelper.TB_NAME, "id", value);
 	                    		
-	                    		addFoodToList(cookbookID.toString(), name, effect, imgid, rank,
-	                    				material_code, step_code);
-	                    		
-	    			        	showTargetFood(bean_food.size()-1);
+	                    		if(type == 0){
+		                    		Long cookbookID = db.insert(SQLiteHelper.TB_NAME, "id", value);
+		                    		
+		                    		addFoodToList(cookbookID.toString(), name, effect, imgid, rank,
+		                    				material_code, step_code);
+		                    		
+		    			        	showTargetFood(bean_food.size()-1);
+		    			        	
+	                    		}else{
+	                    			String targetID = bean_food.get(last_position).getId();
+	                    			
+	                    			db.update(SQLiteHelper.TB_NAME, value, 
+	                    					"id=" + targetID, null);
+	                    			
+	                    			bean_food.remove(last_position);
+	                    			FoodListBean listbean = new FoodListBean();
+	                    			listbean.setId(targetID);
+	                    			listbean.setFoodName(name);
+	                    			listbean.setFoodEffect(effect);
+	                    			listbean.setFoodImgIndex(imgid);
+	                    			listbean.setFoodRank(rank);
+	                    			listbean.setFoodMaterial(material_code);
+	                    			listbean.setFoodStep(step_code);
+	                    			bean_food.add(last_position, listbean);
+	                    			adapter_food.notifyDataSetChanged();
+	                    			
+	                    			showTargetFood(last_position);
+	                    		}
                     		
                     	}else{
                     		Toast.makeText(getApplicationContext(), "添加内容为空！", Toast.LENGTH_LONG).show();
                     	}
                     	
                     	isEdit = false;
+                    	isModify = false;
     					btn_edit.setBackgroundResource(R.drawable.tab_default);
     					layout_show.setVisibility(View.VISIBLE);
     					layout_edit.setVisibility(View.INVISIBLE);
     					btn_arrow.setVisibility(View.VISIBLE);                   
                     	
+    					resetEditUI();
                         dialog.dismiss();
                     }  
                 });   
@@ -623,6 +728,7 @@ public class MainActivity extends Activity{
                 new DialogInterface.OnClickListener() {  
                     public void onClick(DialogInterface dialog, int whichButton) {
     					isEdit = false;
+    					isModify = false;
     					btn_edit.setBackgroundResource(R.drawable.tab_default);
     					layout_show.setVisibility(View.VISIBLE);
     					layout_edit.setVisibility(View.INVISIBLE);
@@ -631,6 +737,7 @@ public class MainActivity extends Activity{
     					showMaterial(last_position);
     					showStep(last_position);                    	
                     	
+    					resetEditUI();
                         dialog.dismiss();
                     }  
                 });  
@@ -646,6 +753,13 @@ public class MainActivity extends Activity{
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						// TODO Auto-generated method stub
+						isModify = true;
+						showEditTargetFood(position);
+						btn_edit.setBackgroundResource(R.drawable.tab_pressed);
+						layout_show.setVisibility(View.INVISIBLE);
+						layout_edit.setVisibility(View.VISIBLE);
+						btn_arrow.setVisibility(View.INVISIBLE);
+						
 						dialog.dismiss();
 					}
 				});
@@ -696,4 +810,29 @@ public class MainActivity extends Activity{
 		showStep(position);
 	}
 	
+	private void resetEditUI(){
+		et_food_name.setText("");
+		et_food_effect.setText("");
+		img_rank_edit.setImageResource(R.drawable.logo_rank_1);
+		img_icon_edit.setImageResource(R.drawable.food1);
+	}
+	
+	private int getIconImgId(String type, int index){
+		String img_name = "type" + String.valueOf(index);
+		int img_id = getResources().getIdentifier(img_name, "drawable", getPackageName());
+		return img_id;
+	}
+	
+	private void showEditTargetFood(int position){
+		FoodListBean bean_target = bean_food.get(position);
+		
+		et_food_name.setText(bean_target.getFoodName());
+		et_food_effect.setText(bean_target.getFoodEffect());
+		temp_rank_index = bean_target.getFoodRank();
+		temp_icon_index = bean_target.getFoodImgIndex();
+		img_rank_edit.setImageResource(getIconImgId("logo_rank_", temp_rank_index));
+		img_icon_edit.setImageResource(getIconImgId("food", temp_icon_index));
+		showMaterial(position);
+		showStep(position);
+	}
 }
