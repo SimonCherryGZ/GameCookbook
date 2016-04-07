@@ -166,8 +166,8 @@ public class MaterialEditDialog extends Dialog{
 			WindowManager.LayoutParams lp = win.getAttributes();
 	        //lp.width = WindowManager.LayoutParams.MATCH_PARENT;
 	        //lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-			lp.width = (int) 900;
-			lp.height = (int) 620;
+			lp.width = (int) 920;
+			lp.height = (int) 650;
 	        win.setAttributes(lp);
 	        
 			dialog.setContentView(layout);

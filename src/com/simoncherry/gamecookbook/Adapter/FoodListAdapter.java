@@ -50,7 +50,6 @@ public class FoodListAdapter extends BaseAdapter{
 			holder = new ViewHolder();
 			holder.tv_food_name = (TextView) convertView.findViewById(R.id.tv_item_food_name);
 			holder.img_bg = (ImageView) convertView.findViewById(R.id.img_item_bg);
-			holder.layout_item = (ViewGroup) convertView.findViewById(R.id.layout_item);
 			
 			convertView.setTag(holder);
 		} else {
@@ -63,12 +62,10 @@ public class FoodListAdapter extends BaseAdapter{
 		holder.tv_food_name.setText(food_name);
 		
 		if(listbean.getHighLight() == true){
-			//holder.layout_item.setBackgroundResource(R.drawable.item_background_pressed);
 			holder.img_bg.setImageBitmap(decodeSampledBitmapFromResource(
 					ctx.getResources(), R.drawable.item_background_pressed,
 					160, 40));
 		}else{
-			//holder.layout_item.setBackgroundResource(R.drawable.item_background_default);
 			holder.img_bg.setImageBitmap(decodeSampledBitmapFromResource(
 					ctx.getResources(), R.drawable.item_background_default,
 					160, 40));
@@ -80,7 +77,6 @@ public class FoodListAdapter extends BaseAdapter{
 	private static class ViewHolder {
 		TextView tv_food_name;
 		ImageView img_bg;
-		ViewGroup layout_item;
 	}
 	
 	public int calculateInSampleSize(BitmapFactory.Options options, 

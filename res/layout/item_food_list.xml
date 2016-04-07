@@ -4,32 +4,25 @@
     android:layout_height="match_parent"
     tools:context="${relativePackage}.${activityClass}" >
 
-    <RelativeLayout
-        android:id="@+id/layout_item"
-        android:layout_width="160dp"
+    <ImageView
+        android:id="@+id/img_item_bg"
+        android:layout_width="140dp"
         android:layout_height="40dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="10dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/item_background_default" />
+
+    <TextView
+        android:id="@+id/tv_item_food_name"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true" >
-        
-        <ImageView 
-            android:id="@+id/img_item_bg"
-            android:layout_width="160dp"
-            android:layout_height="40dp"
-            android:scaleType="fitXY"
-            android:src="@drawable/item_background_default"/>
-
-        <TextView
-            android:id="@+id/tv_item_food_name"
-            android:layout_width="160dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:gravity="center"
-            android:textSize="18sp"
-            android:textColor="@color/tv_default_color"
-            android:textStyle="bold"
-            android:text="龙老汤面" />
-
-    </RelativeLayout>
+        android:layout_centerVertical="true"
+        android:gravity="center"
+        android:text="龙老汤面"
+        android:textColor="@color/tv_default_color"
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
 </RelativeLayout>

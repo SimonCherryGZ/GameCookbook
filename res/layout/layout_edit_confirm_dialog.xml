@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>  
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    
+    <View 
+        android:layout_width="450dp"
+        android:layout_height="250dp"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/bg_frame"/>
+    
+    <TextView 
+        android:id="@+id/tv_confirm_title"
+	    android:layout_width="300dp"
+	    android:layout_height="wrap_content"
+	    android:layout_centerHorizontal="true"
+	    android:layout_alignParentTop="true"
+	    android:layout_marginTop="50dp"
+	    android:textSize="24sp"
+	    android:textStyle="bold"
+	    android:textColor="@color/tv_default_color"
+	    android:text="五彩鱼蛋面"  />
+    
+    <View 
+	    android:id="@+id/view_divider1"
+	    android:layout_width="300dp"
+	    android:layout_height="1dp"
+	    android:layout_centerHorizontal="true"
+	    android:layout_below="@id/tv_confirm_title"
+	    android:layout_marginTop="10dp"
+	    android:background="#c0c0c0" />
+    
+    <TextView 
+        android:id="@+id/tv_confirm_message"
+	    android:layout_width="300dp"
+	    android:layout_height="wrap_content"
+	    android:layout_centerHorizontal="true"
+	    android:layout_below="@id/view_divider1"
+	    android:layout_marginTop="20dp"
+	    android:textSize="18sp"
+	    android:text="要删除该条目吗？"  />
+
+	<View 
+	    android:id="@+id/view_divider2"
+	    android:layout_width="300dp"
+	    android:layout_height="1dp"
+	    android:layout_below="@id/tv_confirm_message"
+	    android:layout_centerHorizontal="true"
+	    android:layout_marginTop="10dp"
+	    android:background="#c0c0c0" />
+	
+	<Button
+	    android:id="@+id/btn_edit_neutral"
+	    android:layout_width="100dp"
+	    android:layout_height="50dp"
+	    android:layout_centerHorizontal="true"
+	    android:layout_below="@+id/view_divider2"
+	    android:layout_marginTop="10dp"
+	    android:background="@drawable/btn_dialog"
+        android:padding="0dp"
+        android:gravity="center"
+        android:textColor="#ffffff"
+	    android:text="neutral" />
+
+	<Button
+	    android:id="@+id/btn_edit_positive"
+	    android:layout_width="100dp"
+	    android:layout_height="50dp"
+	    android:layout_toLeftOf="@id/btn_edit_neutral"
+	    android:layout_below="@+id/view_divider2"
+	    android:layout_marginRight="10dp"
+	    android:layout_marginTop="10dp"
+	    android:background="@drawable/btn_dialog"
+        android:padding="0dp"
+        android:gravity="center"
+        android:textColor="#ffffff"
+	    android:text="positive" />
+
+	<Button
+	    android:id="@+id/btn_edit_negative"
+	    android:layout_width="100dp"
+	    android:layout_height="50dp"
+	    android:layout_toRightOf="@id/btn_edit_neutral"
+	    android:layout_below="@+id/view_divider2"
+	    android:layout_marginLeft="10dp"
+	    android:layout_marginTop="10dp"
+	    android:background="@drawable/btn_dialog"
+        android:padding="0dp"
+        android:gravity="center"
+        android:textColor="#ffffff"
+	    android:text="negative" />
+    
+</RelativeLayout> 

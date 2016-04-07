@@ -118,8 +118,8 @@ public class QueryDialog extends Dialog{
 			Window win = dialog.getWindow();
 			win.getDecorView().setPadding(0, 0, 0, 0);
 			WindowManager.LayoutParams lp = win.getAttributes();
-			lp.width = (int) 700;
-			lp.height = (int) 500;
+			lp.width = (int) 800;
+			lp.height = (int) 530;
 	        win.setAttributes(lp);
 	        
 			dialog.setContentView(layout);

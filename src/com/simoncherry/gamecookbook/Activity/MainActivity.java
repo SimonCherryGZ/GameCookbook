@@ -28,6 +28,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
@@ -144,52 +145,56 @@ public class MainActivity extends Activity{
 		list_material_edit.setOnItemClickListener(new OnItemClickListener(){
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-				AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-				builder.setTitle("要删除该条目吗？");
-				builder.setPositiveButton("删除", new DialogInterface.OnClickListener() {				
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						// TODO Auto-generated method stub
-						bean_material.remove(position);
-						adapter_material.notifyDataSetChanged();
-						dialog.dismiss();
-					}
-				});
+//				AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+//				builder.setTitle("要删除该条目吗？");
+//				builder.setPositiveButton("删除", new DialogInterface.OnClickListener() {				
+//					@Override
+//					public void onClick(DialogInterface dialog, int which) {
+//						// TODO Auto-generated method stub
+//						bean_material.remove(position);
+//						adapter_material.notifyDataSetChanged();
+//						dialog.dismiss();
+//					}
+//				});
+//				
+//				builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+//					@Override
+//					public void onClick(DialogInterface dialog, int which) {
+//						dialog.dismiss();
+//					}
+//				});
+//				
+//				builder.show();
 				
-				builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						dialog.dismiss();
-					}
-				});
-				
-				builder.show();
+				showDelConfirmDialog(MainActivity.this, 0, position);
 			}
 		});
 		
 		list_step_edit.setOnItemClickListener(new OnItemClickListener(){
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-				AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-				builder.setTitle("要删除该条目吗？");
-				builder.setPositiveButton("删除", new DialogInterface.OnClickListener() {				
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						// TODO Auto-generated method stub
-						bean_step.remove(position);
-						adapter_step.notifyDataSetChanged();
-						dialog.dismiss();
-					}
-				});
+//				AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+//				builder.setTitle("要删除该条目吗？");
+//				builder.setPositiveButton("删除", new DialogInterface.OnClickListener() {				
+//					@Override
+//					public void onClick(DialogInterface dialog, int which) {
+//						// TODO Auto-generated method stub
+//						bean_step.remove(position);
+//						adapter_step.notifyDataSetChanged();
+//						dialog.dismiss();
+//					}
+//				});
+//				
+//				builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+//					@Override
+//					public void onClick(DialogInterface dialog, int which) {
+//						dialog.dismiss();
+//					}
+//				});
+//				
+//				builder.show();
 				
-				builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						dialog.dismiss();
-					}
-				});
-				
-				builder.show();
+				showDelConfirmDialog(MainActivity.this, 1, position);
 			}			
 		});
 		
@@ -216,7 +221,6 @@ public class MainActivity extends Activity{
 			public void onClick(View v) {
 				if(isEdit == false && isModify == false){
 					isEdit = true;
-					btn_edit.setBackgroundResource(R.drawable.tab_pressed);
 					layout_show.setVisibility(View.INVISIBLE);
 					layout_edit.setVisibility(View.VISIBLE);
 					btn_arrow.setVisibility(View.INVISIBLE);
@@ -594,210 +598,455 @@ public class MainActivity extends Activity{
 	}
 	
 	private void showAddStepDialog(Context context) {  
-		final EditText editText = new EditText(this);
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);  
-        builder.setTitle("输入步骤");  
-        //builder.setMessage("Message");  
-        builder.setView(editText);
-        builder.setPositiveButton("确定",  
-                new DialogInterface.OnClickListener() {  
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                    	addStepToList(editText.getText().toString());
-                    	list_step_edit.smoothScrollToPosition(bean_step.size()-1);
-                        dialog.dismiss();
-                    }  
-                });   
-        builder.setNegativeButton("取消",  
-                new DialogInterface.OnClickListener() {  
-                    public void onClick(DialogInterface dialog, int whichButton) {  
-                        dialog.dismiss();
-                    }  
-                });  
-        builder.show();  
+//		final EditText editText = new EditText(this);
+//        AlertDialog.Builder builder = new AlertDialog.Builder(context);  
+//        builder.setTitle("输入步骤");  
+//        //builder.setMessage("Message");  
+//        builder.setView(editText);
+//        builder.setPositiveButton("确定",  
+//                new DialogInterface.OnClickListener() {  
+//                    public void onClick(DialogInterface dialog, int whichButton) {
+//                    	addStepToList(editText.getText().toString());
+//                    	list_step_edit.smoothScrollToPosition(bean_step.size()-1);
+//                        dialog.dismiss();
+//                    }  
+//                });   
+//        builder.setNegativeButton("取消",  
+//                new DialogInterface.OnClickListener() {  
+//                    public void onClick(DialogInterface dialog, int whichButton) {  
+//                        dialog.dismiss();
+//                    }  
+//                });  
+//        builder.show();  
+		
+		final EditText editText;
+		final AlertDialog mDialog = new AlertDialog.Builder(context).create();
+		mDialog.show();
+		mDialog.getWindow().setContentView(R.layout.layout_add_step_dialog);
+		editText = (EditText) mDialog.getWindow().findViewById(R.id.et_step);
+		mDialog.getWindow().findViewById(R.id.btn_add_step).setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+            	addStepToList(editText.getText().toString());
+            	list_step_edit.smoothScrollToPosition(bean_step.size()-1);				
+				mDialog.dismiss();
+			}
+		});
+		
+		mDialog.getWindow().findViewById(R.id.btn_cancel_step).setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				mDialog.dismiss();
+			}
+		});
+		
+		mDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM); 
+		mDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+    }
+	
+	private void showDelConfirmDialog(Context context, final int type, final int position) {  
+		final AlertDialog mDialog = new AlertDialog.Builder(context).create();
+		mDialog.show();
+		mDialog.getWindow().setContentView(R.layout.layout_del_confirm_dialog);
+		mDialog.getWindow().findViewById(R.id.btn_del_step).setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {	
+				if(type == 0){
+					bean_material.remove(position);
+					adapter_material.notifyDataSetChanged();				
+				}else{
+					bean_step.remove(position);
+					adapter_step.notifyDataSetChanged();
+				}
+				mDialog.dismiss();
+			}
+		});
+		
+		mDialog.getWindow().findViewById(R.id.btn_cancel_del).setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				mDialog.dismiss();
+			}
+		});
+		
     }
 	
 	private void showAddFoodConfirmDialog(Context context, final int type){
-		AlertDialog.Builder builder = new AlertDialog.Builder(context);  
-		String title;
+//		AlertDialog.Builder builder = new AlertDialog.Builder(context);  
+//		String title;
+//		if(type == 0){
+//			title = "确认添加此菜谱？";
+//		}else{
+//			title = "确认修改此菜谱？";
+//		}
+//		
+//		builder.setTitle(title);
+//		builder.setPositiveButton("确定操作",  
+//                new DialogInterface.OnClickListener() {  
+//                    public void onClick(DialogInterface dialog, int whichButton) {
+//
+//                    	if(
+//                			et_food_name.getText().length()>1 &&
+//                			et_food_effect.getText().length()>1 &&
+//                			bean_material.size()>0 && 
+//                			bean_step.size()>0){
+//                    		
+//                    			String name = et_food_name.getText().toString();
+//                    			String effect = et_food_effect.getText().toString();
+//                    			int imgid = temp_icon_index;
+//                    			int rank = temp_rank_index;
+//
+//	                    		String material_code = "";
+//	                    		for(int i=0; i<bean_material.size(); i++){
+//	                    			int icon_index = bean_material.get(i).getMaterialImgIndex();
+//	                    			String material_name = bean_material.get(i).getMaterialName();
+//	                    			int material_weight = bean_material.get(i).getMaterialWeight();
+//	                    			String material_unit = bean_material.get(i).getMaterialUnit();
+//	                    			
+//	                    			String code = "/" + String.valueOf(icon_index) + "|" 
+//	                    					+ material_name + "|"
+//	                    					+ String.valueOf(material_weight) + "|"
+//	                    					+ material_unit + "|";
+//	                    			
+//	                    			material_code += code;
+//	                    		}
+//	                    		
+//	                    		String step_code = "";
+//	                    		for(int i=0; i<bean_step.size(); i++){
+//	                    			String step_text = bean_step.get(i).getStepText();
+//	                    			
+//	                    			String code = "/" + step_text + "|";
+//	                    			
+//	                    			step_code += code;
+//	                    		}
+//	                    		
+//	                    		ContentValues value = new ContentValues();
+//	                    		value.put("name", name);
+//	                    		value.put("effect", effect);
+//	                    		value.put("imgid", imgid);
+//	                    		value.put("rank", rank);
+//	                    		value.put("material", material_code);
+//	                    		value.put("step", step_code);
+//	                    		
+//	                    		if(type == 0){
+//		                    		Long cookbookID = db.insert(SQLiteHelper.TB_NAME, "id", value);
+//		                    		
+//		                    		addFoodToList(cookbookID.toString(), name, effect, imgid, rank,
+//		                    				material_code, step_code);
+//		                    		
+//		    			        	showTargetFood(bean_food.size()-1);
+//		    			        	
+//	                    		}else{
+//	                    			String targetID = bean_food.get(last_position).getId();
+//	                    			
+//	                    			db.update(SQLiteHelper.TB_NAME, value, 
+//	                    					"id=" + targetID, null);
+//	                    			
+//	                    			bean_food.remove(last_position);
+//	                    			FoodListBean listbean = new FoodListBean();
+//	                    			listbean.setId(targetID);
+//	                    			listbean.setFoodName(name);
+//	                    			listbean.setFoodEffect(effect);
+//	                    			listbean.setFoodImgIndex(imgid);
+//	                    			listbean.setFoodRank(rank);
+//	                    			listbean.setFoodMaterial(material_code);
+//	                    			listbean.setFoodStep(step_code);
+//	                    			bean_food.add(last_position, listbean);
+//	                    			adapter_food.notifyDataSetChanged();
+//	                    			
+//	                    			showTargetFood(last_position);
+//	                    		}
+//                    		
+//                    	}else{
+//                    		Toast.makeText(getApplicationContext(), "添加内容为空！", Toast.LENGTH_LONG).show();
+//                    	}
+//                    	
+//                    	isEdit = false;
+//                    	isModify = false;
+//    					btn_edit.setBackgroundResource(R.drawable.tab_default);
+//    					layout_show.setVisibility(View.VISIBLE);
+//    					layout_edit.setVisibility(View.INVISIBLE);
+//    					btn_arrow.setVisibility(View.VISIBLE);                   
+//                    	
+//    					resetEditUI();
+//                        dialog.dismiss();
+//                    }  
+//                });   
+//		builder.setNeutralButton("继续编辑",
+//				new DialogInterface.OnClickListener() {
+//					@Override
+//					public void onClick(DialogInterface dialog, int which) {
+//						dialog.dismiss();
+//					}
+//				});
+//        builder.setNegativeButton("放弃编辑",  
+//                new DialogInterface.OnClickListener() {  
+//                    public void onClick(DialogInterface dialog, int whichButton) {
+//    					isEdit = false;
+//    					isModify = false;
+//    					btn_edit.setBackgroundResource(R.drawable.tab_default);
+//    					layout_show.setVisibility(View.VISIBLE);
+//    					layout_edit.setVisibility(View.INVISIBLE);
+//    					btn_arrow.setVisibility(View.VISIBLE);
+//    					
+//    					showMaterial(last_position);
+//    					showStep(last_position);                    	
+//                    	
+//    					resetEditUI();
+//                        dialog.dismiss();
+//                    }  
+//                });  
+//        builder.show(); 
+		
+		final AlertDialog mDialog = new AlertDialog.Builder(context).create();
+		mDialog.show();
+		mDialog.getWindow().setContentView(R.layout.layout_edit_confirm_dialog);
+		TextView tv_title = (TextView) mDialog.getWindow().findViewById(R.id.tv_confirm_title);
+		TextView tv_message = (TextView) mDialog.getWindow().findViewById(R.id.tv_confirm_message);
+		Button btn_positive = (Button) mDialog.getWindow().findViewById(R.id.btn_edit_positive);
+		Button btn_neutral = (Button) mDialog.getWindow().findViewById(R.id.btn_edit_neutral);
+		Button btn_negative = (Button) mDialog.getWindow().findViewById(R.id.btn_edit_negative);
+		
+		String message;
 		if(type == 0){
-			title = "确认添加此菜谱？";
+			message = "确认添加此菜谱？";
 		}else{
-			title = "确认修改此菜谱？";
+			message = "确认修改此菜谱？";
 		}
 		
-		builder.setTitle(title);
-		builder.setPositiveButton("确定操作",  
-                new DialogInterface.OnClickListener() {  
-                    public void onClick(DialogInterface dialog, int whichButton) {
+		tv_title.setText(et_food_name.getText().toString());
+		tv_message.setText(message);
+		
+		btn_positive.setText("确定");
+		btn_positive.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {	
+            	if(
+        			et_food_name.getText().length()>1 &&
+        			et_food_effect.getText().length()>1 &&
+        			bean_material.size()>0 && 
+        			bean_step.size()>0){
+            		
+            			String name = et_food_name.getText().toString();
+            			String effect = et_food_effect.getText().toString();
+            			int imgid = temp_icon_index;
+            			int rank = temp_rank_index;
 
-                    	if(
-                			et_food_name.getText().length()>1 &&
-                			et_food_effect.getText().length()>1 &&
-                			bean_material.size()>0 && 
-                			bean_step.size()>0){
+                		String material_code = "";
+                		for(int i=0; i<bean_material.size(); i++){
+                			int icon_index = bean_material.get(i).getMaterialImgIndex();
+                			String material_name = bean_material.get(i).getMaterialName();
+                			int material_weight = bean_material.get(i).getMaterialWeight();
+                			String material_unit = bean_material.get(i).getMaterialUnit();
+                			
+                			String code = "/" + String.valueOf(icon_index) + "|" 
+                					+ material_name + "|"
+                					+ String.valueOf(material_weight) + "|"
+                					+ material_unit + "|";
+                			
+                			material_code += code;
+                		}
+                		
+                		String step_code = "";
+                		for(int i=0; i<bean_step.size(); i++){
+                			String step_text = bean_step.get(i).getStepText();
+                			
+                			String code = "/" + step_text + "|";
+                			
+                			step_code += code;
+                		}
+                		
+                		ContentValues value = new ContentValues();
+                		value.put("name", name);
+                		value.put("effect", effect);
+                		value.put("imgid", imgid);
+                		value.put("rank", rank);
+                		value.put("material", material_code);
+                		value.put("step", step_code);
+                		
+                		if(type == 0){
+                    		Long cookbookID = db.insert(SQLiteHelper.TB_NAME, "id", value);
                     		
-                    			String name = et_food_name.getText().toString();
-                    			String effect = et_food_effect.getText().toString();
-                    			int imgid = temp_icon_index;
-                    			int rank = temp_rank_index;
-
-	                    		String material_code = "";
-	                    		for(int i=0; i<bean_material.size(); i++){
-	                    			int icon_index = bean_material.get(i).getMaterialImgIndex();
-	                    			String material_name = bean_material.get(i).getMaterialName();
-	                    			int material_weight = bean_material.get(i).getMaterialWeight();
-	                    			String material_unit = bean_material.get(i).getMaterialUnit();
-	                    			
-	                    			String code = "/" + String.valueOf(icon_index) + "|" 
-	                    					+ material_name + "|"
-	                    					+ String.valueOf(material_weight) + "|"
-	                    					+ material_unit + "|";
-	                    			
-	                    			material_code += code;
-	                    		}
-	                    		
-	                    		String step_code = "";
-	                    		for(int i=0; i<bean_step.size(); i++){
-	                    			String step_text = bean_step.get(i).getStepText();
-	                    			
-	                    			String code = "/" + step_text + "|";
-	                    			
-	                    			step_code += code;
-	                    		}
-	                    		
-	                    		ContentValues value = new ContentValues();
-	                    		value.put("name", name);
-	                    		value.put("effect", effect);
-	                    		value.put("imgid", imgid);
-	                    		value.put("rank", rank);
-	                    		value.put("material", material_code);
-	                    		value.put("step", step_code);
-	                    		
-	                    		if(type == 0){
-		                    		Long cookbookID = db.insert(SQLiteHelper.TB_NAME, "id", value);
-		                    		
-		                    		addFoodToList(cookbookID.toString(), name, effect, imgid, rank,
-		                    				material_code, step_code);
-		                    		
-		    			        	showTargetFood(bean_food.size()-1);
-		    			        	
-	                    		}else{
-	                    			String targetID = bean_food.get(last_position).getId();
-	                    			
-	                    			db.update(SQLiteHelper.TB_NAME, value, 
-	                    					"id=" + targetID, null);
-	                    			
-	                    			bean_food.remove(last_position);
-	                    			FoodListBean listbean = new FoodListBean();
-	                    			listbean.setId(targetID);
-	                    			listbean.setFoodName(name);
-	                    			listbean.setFoodEffect(effect);
-	                    			listbean.setFoodImgIndex(imgid);
-	                    			listbean.setFoodRank(rank);
-	                    			listbean.setFoodMaterial(material_code);
-	                    			listbean.setFoodStep(step_code);
-	                    			bean_food.add(last_position, listbean);
-	                    			adapter_food.notifyDataSetChanged();
-	                    			
-	                    			showTargetFood(last_position);
-	                    		}
+                    		addFoodToList(cookbookID.toString(), name, effect, imgid, rank,
+                    				material_code, step_code);
                     		
-                    	}else{
-                    		Toast.makeText(getApplicationContext(), "添加内容为空！", Toast.LENGTH_LONG).show();
-                    	}
-                    	
-                    	isEdit = false;
-                    	isModify = false;
-    					btn_edit.setBackgroundResource(R.drawable.tab_default);
-    					layout_show.setVisibility(View.VISIBLE);
-    					layout_edit.setVisibility(View.INVISIBLE);
-    					btn_arrow.setVisibility(View.VISIBLE);                   
-                    	
-    					resetEditUI();
-                        dialog.dismiss();
-                    }  
-                });   
-		builder.setNeutralButton("继续编辑",
-				new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						dialog.dismiss();
-					}
-				});
-        builder.setNegativeButton("放弃编辑",  
-                new DialogInterface.OnClickListener() {  
-                    public void onClick(DialogInterface dialog, int whichButton) {
-    					isEdit = false;
-    					isModify = false;
-    					btn_edit.setBackgroundResource(R.drawable.tab_default);
-    					layout_show.setVisibility(View.VISIBLE);
-    					layout_edit.setVisibility(View.INVISIBLE);
-    					btn_arrow.setVisibility(View.VISIBLE);
-    					
-    					showMaterial(last_position);
-    					showStep(last_position);                    	
-                    	
-    					resetEditUI();
-                        dialog.dismiss();
-                    }  
-                });  
-        builder.show(); 
+    			        	showTargetFood(bean_food.size()-1);
+    			        	
+                		}else{
+                			String targetID = bean_food.get(last_position).getId();
+                			
+                			db.update(SQLiteHelper.TB_NAME, value, 
+                					"id=" + targetID, null);
+                			
+                			bean_food.remove(last_position);
+                			FoodListBean listbean = new FoodListBean();
+                			listbean.setId(targetID);
+                			listbean.setFoodName(name);
+                			listbean.setFoodEffect(effect);
+                			listbean.setFoodImgIndex(imgid);
+                			listbean.setFoodRank(rank);
+                			listbean.setFoodMaterial(material_code);
+                			listbean.setFoodStep(step_code);
+                			bean_food.add(last_position, listbean);
+                			adapter_food.notifyDataSetChanged();
+                			
+                			showTargetFood(last_position);
+                		}
+            		
+            	}else{
+            		Toast.makeText(getApplicationContext(), "添加内容为空！", Toast.LENGTH_LONG).show();
+            	}
+            	
+            	isEdit = false;
+            	isModify = false;
+				layout_show.setVisibility(View.VISIBLE);
+				layout_edit.setVisibility(View.INVISIBLE);
+				btn_arrow.setVisibility(View.VISIBLE);                   
+            	
+				resetEditUI();
+				mDialog.dismiss();
+			}
+		});
+		
+		btn_neutral.setText("取消");
+		btn_neutral.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {	
+				mDialog.dismiss();
+			}
+		});
+		
+		btn_negative.setText("放弃");
+		btn_negative.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				isEdit = false;
+				isModify = false;
+				layout_show.setVisibility(View.VISIBLE);
+				layout_edit.setVisibility(View.INVISIBLE);
+				btn_arrow.setVisibility(View.VISIBLE);
+				
+				showMaterial(last_position);
+				showStep(last_position);                    	
+            	
+				resetEditUI();				
+				mDialog.dismiss();
+			}
+		});		
 	}
 	
 	private void showEditFoodConfirmDialog(Context context, final int position){
-		AlertDialog.Builder builder = new AlertDialog.Builder(context); 
-		builder.setTitle(bean_food.get(position).getFoodName());
-		builder.setMessage("要进行什么操作？");
-		builder.setPositiveButton("修改", 
-				new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						// TODO Auto-generated method stub
-						isModify = true;
-						showEditTargetFood(position);
-						btn_edit.setBackgroundResource(R.drawable.tab_pressed);
-						layout_show.setVisibility(View.INVISIBLE);
-						layout_edit.setVisibility(View.VISIBLE);
-						btn_arrow.setVisibility(View.INVISIBLE);
-						
-						dialog.dismiss();
-					}
-				});
+//		AlertDialog.Builder builder = new AlertDialog.Builder(context); 
+//		builder.setTitle(bean_food.get(position).getFoodName());
+//		builder.setMessage("要进行什么操作？");
+//		builder.setPositiveButton("修改", 
+//				new DialogInterface.OnClickListener() {
+//					@Override
+//					public void onClick(DialogInterface dialog, int which) {
+//						// TODO Auto-generated method stub
+//						isModify = true;
+//						showEditTargetFood(position);
+//						btn_edit.setBackgroundResource(R.drawable.tab_pressed);
+//						layout_show.setVisibility(View.INVISIBLE);
+//						layout_edit.setVisibility(View.VISIBLE);
+//						btn_arrow.setVisibility(View.INVISIBLE);
+//						
+//						dialog.dismiss();
+//					}
+//				});
+//		
+//		builder.setNeutralButton("删除",
+//				new DialogInterface.OnClickListener() {
+//					@Override
+//					public void onClick(DialogInterface dialog, int which) {
+//
+//						try{
+//							db.delete(SQLiteHelper.TB_NAME,
+//									"id" + "=" +
+//							bean_food.get(position).getId(), null);
+//							
+//							bean_food.remove(position);
+//							adapter_food.notifyDataSetChanged();
+//							
+//							if(bean_food.size() > 0){
+//				        		showTargetFood(0);
+//				        	}
+//							
+//						}catch(Exception e){
+//							e.printStackTrace();
+//						}
+//						
+//						dialog.dismiss();
+//					}
+//				});
+//		
+//		builder.setNegativeButton("取消", 
+//				new DialogInterface.OnClickListener() {
+//					@Override
+//					public void onClick(DialogInterface dialog, int which) {
+//						dialog.dismiss();
+//					}
+//				});
+//		
+//		builder.show();
 		
-		builder.setNeutralButton("删除",
-				new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-
-						try{
-							db.delete(SQLiteHelper.TB_NAME,
-									"id" + "=" +
-							bean_food.get(position).getId(), null);
-							
-							bean_food.remove(position);
-							adapter_food.notifyDataSetChanged();
-							
-							if(bean_food.size() > 0){
-				        		showTargetFood(0);
-				        	}
-							
-						}catch(Exception e){
-							e.printStackTrace();
-						}
-						
-						dialog.dismiss();
-					}
-				});
+		final AlertDialog mDialog = new AlertDialog.Builder(context).create();
+		mDialog.show();
+		mDialog.getWindow().setContentView(R.layout.layout_edit_confirm_dialog);
+		TextView tv_title = (TextView) mDialog.getWindow().findViewById(R.id.tv_confirm_title);
+		TextView tv_message = (TextView) mDialog.getWindow().findViewById(R.id.tv_confirm_message);
+		Button btn_positive = (Button) mDialog.getWindow().findViewById(R.id.btn_edit_positive);
+		Button btn_neutral = (Button) mDialog.getWindow().findViewById(R.id.btn_edit_neutral);
+		Button btn_negative = (Button) mDialog.getWindow().findViewById(R.id.btn_edit_negative);
 		
-		builder.setNegativeButton("取消", 
-				new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						dialog.dismiss();
-					}
-				});
+		tv_title.setText(bean_food.get(position).getFoodName());
+		tv_message.setText("要进行什么操作？");
 		
-		builder.show();
+		btn_positive.setText("修改");
+		btn_positive.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {	
+				isModify = true;
+				showEditTargetFood(position);
+				layout_show.setVisibility(View.INVISIBLE);
+				layout_edit.setVisibility(View.VISIBLE);
+				btn_arrow.setVisibility(View.INVISIBLE);
+				
+				mDialog.dismiss();
+			}
+		});
+		
+		btn_neutral.setText("删除");
+		btn_neutral.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {	
+				try{
+					db.delete(SQLiteHelper.TB_NAME,
+							"id" + "=" +
+					bean_food.get(position).getId(), null);
+					
+					bean_food.remove(position);
+					adapter_food.notifyDataSetChanged();
+					
+					if(bean_food.size() > 0){
+		        		showTargetFood(0);
+		        	}
+					
+				}catch(Exception e){
+					e.printStackTrace();
+				}		
+				
+				mDialog.dismiss();
+			}
+		});
+		
+		btn_negative.setText("取消");
+		btn_negative.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				mDialog.dismiss();
+			}
+		});
 	}
 	
 	private void showTargetFood(int position){

@@ -3,12 +3,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
     
+    <View 
+        android:layout_width="500dp"
+        android:layout_height="320dp"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/bg_frame"/>
+    
     <GridView 
         android:id="@+id/girdview_material"
-        android:layout_width="600dp"
-        android:layout_height="140dp"
+        android:layout_width="360dp"
+        android:layout_height="130dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="30dp"
         android:numColumns="5"
         android:gravity="center"
         android:horizontalSpacing="10dp"
@@ -18,11 +24,10 @@
     
     <View 
         android:id="@+id/view_divder"
-        android:layout_width="400dp"
+        android:layout_width="380dp"
         android:layout_height="1dp"
-        android:layout_alignLeft="@id/girdview_material"
+        android:layout_centerHorizontal="true"
         android:layout_below="@id/girdview_material"
-        android:layout_marginLeft="20dp"
         android:layout_marginTop="10dp"
         android:background="#c0c0c0" />
 
@@ -42,7 +47,7 @@
         android:layout_below="@id/view_divder"
         android:layout_toRightOf="@id/img_material"
         android:layout_marginTop="15dp"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="5dp"
         android:textColor="@color/tv_default_color"
         android:textStyle="bold"
         android:textSize="16sp"
@@ -55,7 +60,7 @@
         android:layout_below="@id/view_divder"
         android:layout_toRightOf="@id/et_material_name"
         android:layout_marginTop="15dp"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="5dp"
         android:textColor="@color/tv_default_color"
         android:textStyle="bold"
         android:textSize="16sp"
@@ -68,7 +73,7 @@
         android:layout_below="@id/view_divder"
         android:layout_toRightOf="@id/et_material_weight"
         android:layout_marginTop="15dp"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="5dp"
         android:textColor="@color/tv_default_color"
         android:textStyle="bold"
         android:textSize="16sp"
@@ -76,32 +81,41 @@
     
     <View 
         android:id="@+id/view_divder2"
-        android:layout_width="400dp"
+        android:layout_width="380dp"
         android:layout_height="1dp"
-        android:layout_alignLeft="@id/girdview_material"
+        android:layout_centerHorizontal="true"
         android:layout_below="@id/girdview_material"
-        android:layout_marginLeft="20dp"
         android:layout_marginTop="70dp"
         android:background="#c0c0c0" />
 
     <Button
         android:id="@+id/btn_ok"
         android:layout_width="150dp"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_alignLeft="@+id/view_divder2"
         android:layout_below="@id/view_divder2"
-        android:layout_marginLeft="40dp"
+        android:layout_marginLeft="30dp"
         android:layout_marginTop="10dp"
+        android:background="@drawable/btn_dialog"
+        android:padding="0dp"
+        android:gravity="center"
+        android:textColor="#ffffff"
+        android:textSize="16sp"
         android:text="确定" />
     
     <Button
         android:id="@+id/btn_cancel"
         android:layout_width="150dp"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_alignRight="@+id/view_divder2"
         android:layout_below="@id/view_divder2"
-        android:layout_marginRight="40dp"
+        android:layout_marginRight="30dp"
         android:layout_marginTop="10dp"
+        android:background="@drawable/btn_dialog"
+        android:padding="0dp"
+        android:gravity="center"
+        android:textColor="#ffffff"
+        android:textSize="16sp"
         android:text="取消" />
     
 </RelativeLayout> 
