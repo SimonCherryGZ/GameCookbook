@@ -259,7 +259,7 @@ public class MainActivity extends Activity{
 
 						int icon_index = builder.getIconIndex();
 						String material_name = builder.getMaterialName();
-						int material_weight = builder.getMaterialWeight();
+						String material_weight = builder.getMaterialWeight();
 						String material_unit = builder.getMaterialUnit();
 						
 						addMaterialToList(material_name, icon_index, material_weight, material_unit);
@@ -501,7 +501,7 @@ public class MainActivity extends Activity{
 		list_material_edit.setAdapter(adapter_material);
 	}
 	
-	private void addMaterialToList(String name, int img_index, int weight, String unit){
+	private void addMaterialToList(String name, int img_index, String weight, String unit){
 		MaterialListBean listbean = new MaterialListBean();
 		listbean.setMaterialName(name);
 		listbean.setMaterialImgIndex(img_index);
@@ -523,7 +523,7 @@ public class MainActivity extends Activity{
 		
 		int material_icon_index = 0;
 		String material_name = "";
-		int material_weight = 0;
+		String material_weight = "";
 		String material_unit = "";
 		
 		String material_code = bean_food.get(index).getFoodMaterial();
@@ -541,8 +541,7 @@ public class MainActivity extends Activity{
 				
 				start = end+1;
 				end = material_code.indexOf("|", start);
-				material_weight = Integer.parseInt(
-						material_code.substring(start, end));
+				material_weight = material_code.substring(start, end);
 				
 				start = end+1;
 				end = material_code.indexOf("|", start);
@@ -836,7 +835,7 @@ public class MainActivity extends Activity{
                 		for(int i=0; i<bean_material.size(); i++){
                 			int icon_index = bean_material.get(i).getMaterialImgIndex();
                 			String material_name = bean_material.get(i).getMaterialName();
-                			int material_weight = bean_material.get(i).getMaterialWeight();
+                			String material_weight = bean_material.get(i).getMaterialWeight();
                 			String material_unit = bean_material.get(i).getMaterialUnit();
                 			
                 			String code = "/" + String.valueOf(icon_index) + "|" 

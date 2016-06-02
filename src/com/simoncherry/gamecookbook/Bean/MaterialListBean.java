@@ -4,7 +4,7 @@ package com.simoncherry.gamecookbook.Bean;
 public class MaterialListBean{
 	private String material_name;
 	private int img_index;
-	private int material_weight;
+	private String material_weight;
 	private String material_unit;
 	
 	public void setMaterialName(String name){
@@ -23,11 +23,11 @@ public class MaterialListBean{
 		return this.img_index;
 	}
 	
-	public void setMaterialWeight(int weight){
+	public void setMaterialWeight(String weight){
 		this.material_weight = weight;
 	}
 	
-	public int getMaterialWeight(){
+	public String getMaterialWeight(){
 		return this.material_weight;
 	}
 	

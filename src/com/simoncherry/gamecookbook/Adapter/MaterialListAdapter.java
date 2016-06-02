@@ -62,7 +62,7 @@ public class MaterialListAdapter extends BaseAdapter{
 		MaterialListBean listbean = list.get(position);
 		int material_imgID = listbean.getMaterialImgIndex();
 		String material_name = listbean.getMaterialName();
-		int material_weight = listbean.getMaterialWeight();
+		String material_weight = listbean.getMaterialWeight();
 		String material_unit = listbean.getMaterialUnit();
 		
 		//holder.img_material_icon.setImageResource(material_imgID);
@@ -71,8 +71,7 @@ public class MaterialListAdapter extends BaseAdapter{
 				ctx.getResources(), imgID, 64, 64));
 		
 		holder.tv_material_name.setText(material_name);
-		holder.tv_material_weight.setText(
-				String.valueOf(material_weight) + material_unit);
+		holder.tv_material_weight.setText(material_weight + material_unit);
 		
 		return convertView;
 	}

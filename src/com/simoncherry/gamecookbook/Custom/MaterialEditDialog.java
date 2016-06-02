@@ -47,7 +47,7 @@ public class MaterialEditDialog extends Dialog{
 		
 		private int integer_icon_index;
 		private String text_material_name;
-		private int integer_material_weight;
+		private String integer_material_weight;
 		private String text_material_unit;
 		
 		private DialogInterface.OnClickListener positiveButtonClickListener;  
@@ -84,13 +84,12 @@ public class MaterialEditDialog extends Dialog{
         	return this.text_material_name;
         }
 		
-        public void setMaterialWeight(int weight){
+        public void setMaterialWeight(String weight){
         	this.integer_material_weight = weight;
         }
         
-        public int getMaterialWeight(){
-        	integer_material_weight = 
-        			Integer.parseInt(et_material_weight.getText().toString());
+        public String getMaterialWeight(){
+        	integer_material_weight = et_material_weight.getText().toString();
         	return this.integer_material_weight;
         }
         
